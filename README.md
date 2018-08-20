@@ -1,7 +1,6 @@
 # Incremental-MFPT
 Reachability and Differential based Heuristics for Solving Markov Decision Processes
 
-i
 parameter config file is under ./configs
 
 To install, git Clone external-libs in gitlab, and read INSTALL.txt
