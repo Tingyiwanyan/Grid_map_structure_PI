@@ -1,0 +1,220 @@
+
+## NOTE: dont put comments immediately after a key:string, comments will be interpreted as '\t'; also, usespace key instead of \TAB for ANY spacing!! (yaml-cpp is still buggy for parsing)
+
+
+## --------------- general method setting --------------
+
+## 3 options: {mdp_core, imported_vf, expected_ssp, info_plan}
+method_manager: mdp_core
+
+info_plan:
+  layers: 1
+  stages: 4
+  grid_x_size: 12
+  grid_y_size: 12
+  solver: dp    #dp, greedy
+  gp_params:
+    input_dim: 2
+    cov_func: "CovSum ( CovSEard, CovNoise)"
+    cov_params1: 1 #3.22155 #1
+    cov_params2: 1 #3.36032 #1 
+    cov_params3: 1 #3.41523 #1
+    cov_params4: -1 #-2.32423 #-1
+    
+    max_bv_size: 100 
+    tolerance_error: 1e-20 
+  multi_robot:
+    lambda: 1.0
+    rounds: 6
+
+imported_vf: 
+  #file_name: ca_subCA_das_2015121209.nc
+  file_location: ../../roms/currents_nc201512/   #relative to current folder, ending with "/"
+  file_name: roms1450558800.nc
+  num_of_files: 10
+  rescale_vf: 1
+  rescale_nc_interval: 10   #default NC time/interval between two frames is 1
+  rescale_nc_x: 0.1
+  rescale_nc_y: 0.1
+  gp_params:
+    input_dim: 1
+    cov_func: "CovSEiso"
+    cov_params1: 0
+    cov_params2: 0
+
+expected_ssp:
+  spline_fit: false
+
+
+## ----------------- disturbance setting ---------------
+
+disturbance:
+  max_magnitude: 0.9	# try to make it smaller than vehicle v_max
+  ## pattern option: {uniform, centripetal, swirl, swirl-x, swirl-y, hyperbolic}
+  pattern: uniform
+  ## below for dynamic vf
+  translating_center: false
+  rotating_vectors: false
+  rotate_omega: 10      # d_angle = omega*dt, in degree
+  ## below for uniform vf (static or dynamic)
+  v_uniform: 
+    x: 0 #-0.4
+    y: 0 #0.5
+  ## below for noisy vf
+  perturb_freq: 2       # frequency of adding noise
+  gaussian_sigma: 0.4   #perturb noise
+
+## ----------------- Obstacle setting -------------------
+obstacles:
+  hasObs: true
+  bbx1a: 320
+  bbx1b: 333
+  bbx2a: 337  #186
+  bbx2b: 351   #51
+  bbx3a: 672 
+  bbx3b: 686
+  bbx4a: 690 
+  bbx4b: 703
+  bbx5a: 1002 
+  bbx5b: 938
+  bbx6a: 810 
+  bbx6b: 714
+  bbx7a: 650 
+  bbx7b: 586
+  bbx8a: 458 
+  bbx8b: 362
+  bbx9a: 298
+  bbx9b: 202
+  bbx10a: 74 
+  bbx10b: 10
+  bbx11a: 1013 
+  bbx11b: 949
+  bbx12a: 821 
+  bbx12b: 725
+  bbx13a: 661 
+  bbx13b: 565
+  bbx14a: 437 
+  bbx14b: 373
+  bbx15a: 309
+  bbx15b: 213
+  bbx16a: 85 
+  bbx16b: 21
+  bbx17a: 687  #687 #334 #554
+  bbx17b: 689  #689 #336 #490
+  bbx18a: 334  #687 #334 #554
+  bbx18b: 336  #689 #336 #490
+  bbx19a: 554  #687 #334 #554
+  bbx19b: 490  #689 #336 #490
+
+  bbx20a: 276  #480 #2048 #200 #450 #800 #1250 #1800 #2450 #364 #670 #3200 #4050 #5000
+  bbx20b: 203  #484 #2056 #202 #453 #805 #1255 #1807 #2459 #261 #575 #3211 #4062 #5013
+  bbx21a: 371  #490 #2066 #206 #459 #812 #1265 #1818 #2472 #461 #545 #3223 #4076 #5028
+  bbx21b: 15   #492 #2074 #207 #461 #815 #1268 #1824 #2479 #7   #398 #3234 #4088 #5041
+  bbx22a: 767  #499 #2084 #212 #468 #824 #1281 #1835 #2490 #350 #564 #3245 #4101 #5058
+  bbx22b: 643  #501 #2092 #213 #470 #827 #1284 #1841 #2497 #653 #411 #3256 #4113 #5071
+  bbx23a: 549  #507 #2102 #217 #476 #834 #1294 #1852 #2510 #614 #384 #3268 #4127 #5086
+  bbx23b: 677  #511 #2111 #219 #479 #839 #1299 #1859 #2519 #745 #275 #3279 #4139 #5099
+  bbx24a: 594  #493 #2075
+  bbx24b: 679  #498 #2083
+  bbx25a: 485  #493
+  bbx25b: 489  #498
+  bbx26a: 502  #493
+  bbx26b: 506  #498
+  
+
+## ----------------- MDP setting -------------------
+
+mdp_methods:
+  # currently only value iteration method {value, policy, LP}
+  shared_policy: true     # for multi-vehicle, only one set of policy 
+  iteration_method: MFPT-VI #policy #value #priori #prioriPI #policyLP #valueMFPTSub #valueMFPTD #prioriD #qlearning (350000 [279874]) #MFPTQL (300,100) #DYNA (10000[10529 {k=10}]) #MFPTDYNA (800,100)
+  num_iterations: 10000
+  num_trials: 35000000
+  action_cost: 1.0  
+  goal_reward: 100.0
+  obst_penalty: 0 #-100.0
+  epsilon: 1
+  learning_rate: 0.1
+  discount_factor: 0.99
+  explore_rate: 50
+  mfpt_frequency: 100
+  use_last_frame: false    # textbook way: new values propagated from old values of last frame
+  transition_model:
+    back_transition: true  # be careful as turn off it will affect sigma
+    #gaussian_sigma: 0.5   # sampling in polar system angle [0, +-pi], so sigma \in [0.3, 1]? 
+			   # sigma^2 = vehicle_sigma^2 + disturb_sigma^2
+
+
+## ----------------- vehicle setting ---------------
+
+vehicle_model:
+  mass: 52              # fixed
+  v_max: 1              # 0.4
+  gaussian_sigma: 0.3	# action noise
+
+vehicle_controller:
+  PID_velocity:
+    k_p: 30  
+    k_i: 10
+    k_d: 20
+  PID_position:
+    k_p: 30  
+    k_i: 1
+    k_d: 1
+  freq_traj_marks: 2          # waypoints per sec recorded in trajectory
+
+## two controller options: { mdp_policy, dead_reckoning}
+macro_controller: mdp_policy
+#macro_controller: dead_reckoning
+
+dead_reckoning:
+  segment_length: 50
+  dist_threshold: 0.5       # should not be too small, otherwise oscillation
+  
+mdp_policy: todo 
+
+
+## ---------------- environment settings ------------- 
+
+environment:
+  coordinate_bounds:
+    bound_x: 27               #assume symmetric, e.g., x coordinate is [-27, 27]
+    bound_y: 27
+    bound_z: 27
+  grids:
+    num_rows: 30
+    num_cols: 30
+  isSubSpace: 0
+  partitions:
+    num_partitions: 4
+
+start_goal_config:
+  num_starts: 1
+  tf2_starts: 	     #format:  si: [x, y, theta]
+    s0: [9, -21, 0.1]       #must start from 0  -13.0, -13, 0.1            -17, -17, 0.1
+    s1: [-13.0, 25, 1.5]
+    s2: [-2.0, -3, 1.5]
+  num_goals: 1
+  tf2_goals:
+    g0: [-8, 18, 0.5]       #must start from 0 17 0.5                       17, -17, 0.5        0, 3, 0.5
+    g1: [0.0, -17.0, 0]
+    g2: [-18.0, 0.0, 0]
+  
+
+## ---------------- visualization settings ------------- 
+
+visualization:
+  show_policy: true
+  show_grids: true
+  show_vec_field: true
+  show_trajectory: true
+  show_way_points: true
+  show_stoch_topo: false
+  show_states_pos: false
+  show_state_value: false
+  use_fluid: false              # fluid simulation, under construction
+  ## below rescale value just for visualzation, not real length, tune when necessary
+  visual_vf_scale: 3.5
+  visual_arrow_scale: 1
+
+

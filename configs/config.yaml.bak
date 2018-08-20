@@ -1,0 +1,121 @@
+
+## NOTE: dont put comments immediately after a key:string, comments will be interpreted as '\t'; also, usespace key instead of \TAB for ANY spacing!! (yaml-cpp is still buggy for parsing)
+
+
+## --------------- general method setting --------------
+
+## 3 options: {mdp_core, imported_vf, expected_ssp}
+method_manager: mdp_core
+
+mdp_core: 
+  add_properties: todo
+
+imported_vf: 
+  file_name: ca_subCA_das_2015121209.nc
+  scaling_x: 0.1
+  scaling_y: 0.1
+
+expected_ssp:
+  spline_fit: true
+
+
+## ----------------- disturbance setting ---------------
+
+disturbance:
+  max_magnitude: 0.9	# try to make it smaller than vehicle v_max
+  ## pattern option: {uniform, centripetal, swirl, swirl-x, swirl-y, hyperbolic}
+  pattern: uniform
+  ## below for dynamic vf
+  translating_center: false
+  rotating_vectors: false
+  rotate_omega: 10      # d_angle = omega*dt, in degree
+  ## below for uniform vf (static or dynamic)
+  v_uniform: 
+    x: -0.4
+    y: 0.5
+  ## below for noisy vf
+  perturb_freq: 2       # frequency of adding noise
+  gaussian_sigma: 0.4   #perturb noise
+
+
+## ----------------- MDP setting -------------------
+
+mdp_methods:
+  # currently only value iteration method {value, policy, LP}
+  iteration_method: value
+  num_iterations: 30
+  action_cost: 1.0  
+  obst_penalty: 0  
+  use_last_frame: true     # textbook way: new values propagated from old values of last frame
+  transition_model:
+    back_transition: true  # be careful as turn off it will affect sigma
+    #gaussian_sigma: 0.5   # sampling in polar system angle [0, +-pi], so sigma \in [0.3, 1]? 
+			   # sigma^2 = vehicle_sigma^2 + disturb_sigma^2
+
+
+## ----------------- vehicle setting ---------------
+
+vehicle_model:
+  mass: 52              # fixed
+  v_max: 1              # 0.4
+  gaussian_sigma: 0.3	# action noise
+  start_tf2:            # yaml-cpp has bug in parsing {key: value} form 
+    x: -10.0 
+    y: -20.0
+    a: 0.1
+
+vehicle_controller:
+  PID_velocity:
+    k_p: 50  
+    k_i: 10
+    k_d: 20
+  PID_position:
+    k_p: 30  
+    k_i: 1
+    k_d: 1
+  goal_tf2: 
+    x: 15.0
+    y: 18.0 
+    a: 0.5
+  freq_traj_marks: 2          # waypoints per sec recorded in trajectory
+
+## two controller options: { mdp_policy, dead_reckoning}
+macro_controller: mdp_policy
+#macro_controller: dead_reckoning
+
+dead_reckoning:
+  segment_length: 50
+  dist_threshold: 0.5       # should not be too small, otherwise oscillation
+  
+mdp_policy: todo 
+
+
+## ---------------- environment settings ------------- 
+
+environment:
+  coordinate_bounds:
+    bound_x: 27               #assume symmetric, e.g., x coordinate is [-27, 27]
+    bound_y: 27
+    bound_z: 27
+  grids:
+    num_rows: 20
+    num_cols: 20
+
+
+## ---------------- visualization settings ------------- 
+
+visualization:
+  show_policy: true
+  show_grids: false
+  show_vec_field: true
+  show_trajectory: true
+  show_way_points: true
+  show_stoch_topo: false
+  show_states_pos: false
+  show_state_value: false
+  use_fluid: false              # fluid simulation, under construction
+  ## below rescale value just for visualzation, not real length, tune when necessary
+  visual_vf_scale: 3
+  visual_arrow_scale: 0.5
+
+
