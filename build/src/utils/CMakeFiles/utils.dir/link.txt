@@ -1,0 +1,2 @@
+/usr/bin/ar qc libutils.a  CMakeFiles/utils.dir/argparser.c.o CMakeFiles/utils.dir/parameters.cc.o CMakeFiles/utils.dir/clock.cc.o CMakeFiles/utils.dir/data_loader.cc.o
+/usr/bin/ranlib libutils.a

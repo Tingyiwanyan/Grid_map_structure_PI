@@ -1,18 +1,18 @@
 #ifndef MDP_NET_H
 #define MDP_NET_H
 
-#include "mdp_state.h" 
-#include "mdp_grid2d.h" 
+#include "mdp_state.h"
+#include "mdp_grid2d.h"
 #include "../viz_tool/glfunc.h"
 
-/*y default, 1st cell of grid start from bottom left; 
+/*y default, 1st cell of grid start from bottom left;
 if from top left, comment below */
 
 #define CELL_BEGIN_FROM_BOTTOM_LEFT
 
 namespace mdp_planner{
 
-  typedef 
+  typedef
   struct MDP_Net : public MDP_Grid2D
   {
 
@@ -20,21 +20,22 @@ namespace mdp_planner{
     typedef boost::shared_ptr<const MDP_Net> ConstPtr;
 
     std::vector<mdp_state_t*> mdp_states;
+    std::vector<mdp_state_t*> mdp_states_buff;
     std::vector<int> mdp_obstacle_ids;
     std::vector<int> reachablestates;
     std::vector<int> reachablestatesdg;
     std::vector<int> mdp_local_update_states;
     // associated with same idx as cell_centers
-    
+
     viz_tool::RGB policy_color;
-   
+
     MDP_Net(const MDP_Grid2D::Ptr& p)
     {
       initializeGrid2D(p->n_cols, p->n_rows, p->resolution, p->origin);
       cell_centers = p->cell_centers; //direct copy
       createStates();
       constructStatesTransitions();
-      
+
       policy_color.r = 255;
       policy_color.g = 75;
       policy_color.b = 75;
@@ -48,9 +49,10 @@ namespace mdp_planner{
 	mdp_state_t* s = new mdp_state_t(*p->mdp_states[i]);
         mdp_states.push_back(s);
       }
-      constructStatesTransitions(); 
+      constructStatesTransitions();
+      //initialize_nextlayer();
 	 //it is important to construct new!!, as transition cannot be copied (copied the invalid ones)!
-      
+
       policy_color.r = 255;
       policy_color.g = 75;
       policy_color.b = 75;
@@ -58,13 +60,14 @@ namespace mdp_planner{
 
 
     virtual ~MDP_Net()
-    { 
-      destroyStates(); 
+    {
+      destroyStates();
       cout<<"\t mdp_net: destroyed all mdp states."<<endl;
     }
 
 
     //create states based on created grids
+
     virtual void createStates(void)
     {
       mdp_states.clear();
@@ -98,12 +101,12 @@ namespace mdp_planner{
       return mdp_states[id];
     }
 
-    mdp_state_t* getState(const point2d_t& p) 
-    {  
-       return getState(p, origin, resolution, resolution); 
+    mdp_state_t* getState(const point2d_t& p)
+    {
+       return getState(p, origin, resolution, resolution);
     }
 
-    
+
     //establish stochastic topology by linking adjacent states
     void constructStatesTransitions(void)
     {
@@ -196,18 +199,18 @@ namespace mdp_planner{
 
 
     //bounding box version, corner1 and corner2 define diagnol of bounding box
-    virtual void 
+    virtual void
     setObstacleStateValues(uint bbx_corner1, uint bbx_corner2, double val)
     {
       if(n_cols == 0){
         cout<<"mdp_net: the grid n_cols needs to be non-zero!"<<endl;
         return;
       }
- 
-      int max_idx = (int)std::max(bbx_corner1, bbx_corner2); 
-      int min_idx = (int)std::min(bbx_corner1, bbx_corner2); 
 
-      int bbx_height = max_idx/n_cols - min_idx/n_cols + 1; 
+      int max_idx = (int)std::max(bbx_corner1, bbx_corner2);
+      int min_idx = (int)std::min(bbx_corner1, bbx_corner2);
+
+      int bbx_height = max_idx/n_cols - min_idx/n_cols + 1;
       int bbx_width = std::abs(max_idx%(int)n_cols - min_idx%(int)n_cols) + 1;
       assert(fabs(bbx_width) <= n_cols); //double check no weird abs behavior
 
@@ -295,11 +298,11 @@ namespace mdp_planner{
 
     virtual void
     setObstacleStateValues(double val){}
-    
+
     void setPolicyColor(const viz_tool::RGB &color) {
       policy_color = color;
     }
-    
+
     viz_tool::RGB getPolicyColor() {
       return policy_color;
     }
@@ -310,4 +313,3 @@ namespace mdp_planner{
 }
 
 #endif
-

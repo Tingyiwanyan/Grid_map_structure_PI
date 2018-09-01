@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmethod_manager.a  CMakeFiles/method_manager.dir/method_manager.cc.o
+/usr/bin/ranlib libmethod_manager.a

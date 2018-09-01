@@ -1,0 +1,2 @@
+/usr/bin/ar qc libviz_tool.a  CMakeFiles/viz_tool.dir/argparser.cc.o CMakeFiles/viz_tool.dir/bmploader.cc.o CMakeFiles/viz_tool.dir/canvas.cc.o CMakeFiles/viz_tool.dir/floor.cc.o CMakeFiles/viz_tool.dir/glm.cc.o CMakeFiles/viz_tool.dir/gltb.cc.o CMakeFiles/viz_tool.dir/glfunc.cc.o CMakeFiles/viz_tool.dir/gldraw.cc.o CMakeFiles/viz_tool.dir/shadow.cc.o CMakeFiles/viz_tool.dir/texture.cc.o CMakeFiles/viz_tool.dir/tex_walls.cc.o
+/usr/bin/ranlib libviz_tool.a

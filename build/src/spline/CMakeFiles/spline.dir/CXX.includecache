@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/spline/UnconstrainedSplineFit.h
+list
+-
+vector
+-
+armadillo
+-
+
+/home/tingyi/Incremental-MFPT/src/spline/UnconstrainedSplineFit.cc
+iostream
+-
+ctime
+-
+math.h
+-
+unistd.h
+-
+spline/UnconstrainedSplineFit.h
+/home/tingyi/Incremental-MFPT/src/spline/spline/UnconstrainedSplineFit.h
+
+/home/tingyi/Incremental-MFPT/src/spline/spline_fit.cc
+iostream
+-
+fstream
+-
+ctime
+-
+spline/UnconstrainedSplineFit.h
+/home/tingyi/Incremental-MFPT/src/spline/spline/UnconstrainedSplineFit.h
+

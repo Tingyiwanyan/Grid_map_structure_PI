@@ -2,12 +2,12 @@
 #include "fluid/fluid2d.h"
 #include "animation/animation.h"
 
-// ascii codes for various special keys 
+// ascii codes for various special keys
 #define ESCAPE 27
 
 //keyboard control of camera
-GLfloat Xrot;   // x rotation 
-GLfloat Yrot;   // y rotation 
+GLfloat Xrot;   // x rotation
+GLfloat Yrot;   // y rotation
 GLfloat Ztran=0.0f; // translation/depth into the screen.
 
 int BackColor=0;
@@ -15,7 +15,7 @@ int BackColor=0;
 void
 display(void)
 {
-
+//std::cout<<"Im here in display"<<std::endl;
   //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -55,10 +55,11 @@ display(void)
 }
 
 
-void 
+void
 normalKeyPressed(unsigned char key, int x, int y){
 
-  // avoid thrashing this procedure 
+  // avoid thrashing this procedure
+  std::cout<<"Im here in normalkeypress"<<std::endl;
   usleep(100);
 
   render_mdp::key(key, x, y);
@@ -68,7 +69,7 @@ normalKeyPressed(unsigned char key, int x, int y){
   switch (key) {
     case 'b':
     case 'B':
-      if(BackColor) BackColor = 0;        
+      if(BackColor) BackColor = 0;
       else BackColor = 1;
       break;
     case ESCAPE: // kill everything.
@@ -85,7 +86,7 @@ normalKeyPressed(unsigned char key, int x, int y){
 }
 
 
-void 
+void
 specialKeyPressed(int key, int x, int y)
 {
 
@@ -143,11 +144,12 @@ animation(int argc, char** argv)
   //methodManager();
 
   render_mdp::init();		//must be after mdp initialized
-  fluid::init(); 
+  fluid::init();
   //initMDP();
 
   glutReshapeFunc(&reshape);
   glutDisplayFunc(&display);
+
   glutKeyboardFunc(&normalKeyPressed);
   glutSpecialFunc(&specialKeyPressed);
   //glutMouseFunc(&fluid::mouse_func);
@@ -155,6 +157,7 @@ animation(int argc, char** argv)
   //glutMotionFunc(&fluid::motion_func);
   glutMotionFunc(&motion);
   glutIdleFunc(&idle);
+
 
   //modelInit();
   //makeCheckerFloorTexture();
@@ -168,7 +171,3 @@ animation(int argc, char** argv)
   return 0;
 
 }
-
-
-
-

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libanimation.a  CMakeFiles/animation.dir/render_mdp.cc.o CMakeFiles/animation.dir/animation.cc.o
+/usr/bin/ranlib libanimation.a

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libdisturbance.a  CMakeFiles/disturbance.dir/disturbance.cc.o
+/usr/bin/ranlib libdisturbance.a

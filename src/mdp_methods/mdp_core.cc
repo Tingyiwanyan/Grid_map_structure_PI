@@ -1,8 +1,9 @@
-
 #include "geometry_utils/Vector4.h"
 #include "mdp_methods/mdp_core.h"
+#include "method_manager/method_manager.h"
 #include "mdp_methods/ssp.h"
 #include "method_manager/method_manager.h"
+#include "animation/animation.h"
 #include <map>
 #include <fstream>
 #include <queue>
@@ -21,9 +22,9 @@ int d_count = 1;
 
 MDP::MDP(const utils::Parameters::Ptr& pParams, const MDP_Net::Ptr& pNet, const Disturbance::Ptr& pDisturb){
 
-    assert(pParams);
-    assert(pNet);
-    assert(pDisturb);
+    //assert(pParams);
+    //assert(pNet);
+    //assert(pDisturb);
     this->pParams  = pParams;
     this->pNet  = pNet;
     this->pDisturb = pDisturb;
@@ -69,7 +70,7 @@ MDP::loadParams(void){
 }
 
 
-void 
+void
 MDP::fillTypeValue(mdp_state_t* _state, type_t _type,  double _value){
 
     mdp_state_t* s=_state;
@@ -82,7 +83,7 @@ MDP::fillTypeValue(mdp_state_t* _state, type_t _type,  double _value){
 }
 
 
-void 
+void
 MDP::fillTypeValueVec(vector<mdp_state_t*>& _states, type_t _type, vector<double>& _values){
 
     assert(_states.size()==_values.size());
@@ -384,6 +385,8 @@ MDP::updateStateRecordsQLearning(mdp_state_t* s){
 
 void
 MDP::iterations(void){
+    string config_file("/home/tingyi/Incremental-MFPT/configs/config.yaml");
+    pParams = utils::Parameters::Ptr(new utils::Parameters(config_file));
 
     cout<<"need to finish "<<num_iters<<" iterations."<<endl;
     cout<<"iteration progress: "<<std::flush;
@@ -405,7 +408,8 @@ MDP::iterations(void){
     else if (iter_method.compare("MFPT-VI") == 0)
     {
         uint i;
-        for ( i = 0; i < 1000; i++)
+        num_iters = pParams->getParamNode()["environment"]["grids"]["num_iterations"].as<unsigned int>();
+        for ( i = 0; i < num_iters; i++)
         {
             //cout << i << " " << std::flush;
             double d = valueIterationMFPT(pNet->mdp_states,i);
@@ -860,10 +864,11 @@ MDP::prioritizedSweeping(vector<mdp_state_t*>& _states){
 
 double
 MDP::valueIterationMFPT(vector<mdp_state_t*>& _states, int iteration_num, string direction){
-
+    std::cout<<"Im here in MFPT value iteration"<<std::endl;
     vector<mdp_state_t*> _prioritizedstates;
     vector<Transform2> tf2_starts_1, tf2_goals_1;
     vector<double> vec = pParams->getParamNode()["start_goal_config"]["tf2_starts"]["s0"].as< vector<double> >();
+    std::cout<<"start position"<<std::endl<<vec[0]<<"  "<<vec[1]<<"  "<<vec[2]<<std::endl;
     tf2_starts_1.push_back(Transform2(vec[0], vec[1], vec[2]));
     vector<double> vec1 = pParams->getParamNode()["start_goal_config"]["tf2_goals"]["g0"].as< vector<double> >();
     tf2_goals_1.push_back(Transform2(vec1[0], vec1[1], vec1[2]));
@@ -883,6 +888,11 @@ MDP::valueIterationMFPT(vector<mdp_state_t*>& _states, int iteration_num, string
             high_resolution_clock::time_point t2 = high_resolution_clock::now();
             auto duration = duration_cast<microseconds>( t2 - t1 ).count();
             cout << "\nTime Taken Iteration MFPT-VI FPT: " << duration/1000000.0 << " seconds" << endl;
+            //glutDisplayFunc(&display);
+
+            //render_mdp::findPlaneWrapper();
+
+            //glutMainLoop();
 
             vector<int>stateid(num_states);
             it_cnt = 0;
@@ -3503,6 +3513,3 @@ MDP::cleanStates(void) {
     }
 
 }
-
-
-

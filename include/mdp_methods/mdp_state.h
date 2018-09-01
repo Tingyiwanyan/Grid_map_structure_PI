@@ -1,5 +1,5 @@
 
-#ifndef MDP_STATE_H 
+#ifndef MDP_STATE_H
 #define MDP_STATE_H
 
 #include <stdlib.h>
@@ -16,7 +16,7 @@
 
 #ifndef INF
 #define INF std::numeric_limits<int>::max()
-#endif 
+#endif
 
 #ifndef EPSILON
 #define EPSILON std::numeric_limits<float>::min()
@@ -31,13 +31,13 @@ typedef uint ID;
 const uint NUM_ACTIONS = 9;
 typedef enum {ZERO=0, NORTH, NE, EAST, SE, SOUTH, SW, WEST, NW} action_t;
 //typedef enum {ZERO=0, NORTH, EAST, SOUTH, WEST} action_t;
-typedef enum {BODY, START, GOAL, OBSTACLE, REMOVED} type_t; 
+typedef enum {BODY, START, GOAL, OBSTACLE, REMOVED} type_t;
 	//REMOVED: finished goals //OBSTACLE may be moved out to ocp_states
 
 
 namespace mdp_planner{
 
-  typedef 
+  typedef
   struct MDP_State {
 
     typedef boost::shared_ptr<MDP_State> Ptr;
@@ -48,11 +48,11 @@ namespace mdp_planner{
 
     //point_t pos;		// position info should be obtained from grid2d
 
-    int id;			// used this idx to retrieve cell centers 
+    int id;			// used this idx to retrieve cell centers
     type_t type;		// such as an obstacle state
     bool color;			// whether visted or not
 
-    vector<bool> actions; 		// NUM_ACTION actions, true means an action in selected direction 
+    vector<bool> actions; 		// NUM_ACTION actions, true means an action in selected direction
     vector<MDP_State*> successors;	// default null, can be itself
     set<MDP_State*> predecessors;	// default null, can be itself
     vector<double> probs;		// transition probabilities, default 0
@@ -62,13 +62,13 @@ namespace mdp_planner{
     // value iterations
     vector<double> q_values;		// size=#actions, record q value for each action
     double optimal_value;		// the best q value
-    action_t optimal_action;		// the best action 
+    action_t optimal_action;		// the best action
     double last_optimal_value;		// standard VI are computed from values of last stage, a snapshot
     action_t last_optimal_action;
 
     MDP_State* spawn_parent; 	// spawn a copy of state by adding special properties, eg, goal/start
     map<MDP_State*, pair<double, action_t> > m_values;	//pair<value, optimal_action>, used in ssp
-  
+
 
     /**** some light weight inline functions ****/
 
@@ -92,7 +92,7 @@ namespace mdp_planner{
 
     //reset state values
     inline void reset_state(void){
-      optimal_value = 0; 
+      optimal_value = 0;
       optimal_action = ZERO;
       last_optimal_value=0;
       std::fill(actions.begin(), actions.end(), false);
@@ -102,6 +102,8 @@ namespace mdp_planner{
 
     // return a unit vector specifying direction (assume origin is bottom-left)
     // if ZERO, then 0 vector returned. use only x-y plane here, z=0
+    
+
     static geometry_utils::Vec2 getActionVector(action_t in) {
       // on horizontal plane, z=0;
       switch(in){
@@ -145,7 +147,7 @@ namespace mdp_planner{
   } mdp_state_t;
 
 
-}//namespace 
+}//namespace
 
 /*
 typedef struct _Mstate {
@@ -156,5 +158,3 @@ typedef struct _Mstate {
 */
 
 #endif
-
-

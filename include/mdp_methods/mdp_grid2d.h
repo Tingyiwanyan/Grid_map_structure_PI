@@ -10,19 +10,24 @@ using namespace std;
 
 namespace mdp_planner{
 
-  typedef 
-  struct MDP_Grid2D 
+  typedef
+  struct MDP_Grid2D
   {
 
     typedef boost::shared_ptr<MDP_Grid2D> Ptr;
     typedef boost::shared_ptr<const MDP_Grid2D> ConstPtr;
 
-    uint n_cols, n_rows;
-    double resolution;
+    uint n_cols, n_rows, n_cols_buff, n_rows_buff;
+    //Create buffer data for switching grids
+    double resolution, resolution_buff;
+    int flag = 0;
     point2d_t origin;
 
-    std::vector<point2d_t> 	cell_centers;	
-   
+    std::vector<point2d_t> 	*cell_centers_p;
+    std::vector<point2d_t>  *cell_centers_nl_p;
+    std::vector<point2d_t>  cell_centers;
+    std::vector<point2d_t>  cell_centers_buff;
+
     MDP_Grid2D():n_cols(0), n_rows(0), resolution(0){}
     MDP_Grid2D(uint _n_cols, uint _n_rows, double _resolution, const point2d_t& _origin)
     {
@@ -38,6 +43,38 @@ namespace mdp_planner{
       n_rows = _n_rows;
       resolution = _resolution;
       origin = _origin;
+    }
+
+    virtual void replacegrid(uint _n_cols, uint _n_rows, double _resolution, const point2d_t& _origin)
+    {
+      cell_centers.clear();
+      if(n_cols == 0 || n_rows == 0)
+      {
+        cout<<"mdp_grid2d: incorrect initialization of grid!"<<endl;
+        return;
+      }
+
+      double cell_width = resolution;
+      double cell_center_offset = cell_width/2;
+
+      cell_centers.clear();
+      uint id = 0;
+      for(uint i=0; i<n_rows; i++)
+        for(uint j=0; j<n_cols; j++){
+          point2d_t p;
+          p.x() = origin.x() + j*resolution + cell_center_offset;
+          p.y() = origin.y() + i*resolution + cell_center_offset;
+          cell_centers.push_back(p);
+       }
+
+    }
+    virtual void replace_currentlayer(uint _n_cols, uint _n_rows, double _resolution, const point2d_t& _origin)
+    {
+      n_cols = _n_cols;
+      n_rows = _n_rows;
+      resolution = _resolution;
+      origin = _origin;
+      //replacegrid();
     }
 
 
@@ -63,6 +100,33 @@ namespace mdp_planner{
           cell_centers.push_back(p);
        }
     }
+
+    virtual void createGrids_buff(uint _n_cols, uint _n_rows, double _resolution, const point2d_t& _origin)
+    {
+      n_cols_buff = _n_cols;
+      n_rows_buff = _n_rows;
+      resolution_buff = _resolution;
+      origin = _origin;
+      if(n_cols_buff == 0 || n_rows_buff == 0)
+      {
+        cout<<"mdp_grid2d: incorrect initialization of grid!"<<endl;
+        return;
+      }
+
+      double cell_width = resolution_buff;
+      double cell_center_offset = cell_width/2;
+
+      cell_centers_buff.clear();
+      uint id = 0;
+      for(uint i=0; i<n_rows; i++)
+        for(uint j=0; j<n_cols; j++){
+          point2d_t p;
+          p.x() = origin.x() + j*resolution + cell_center_offset;
+          p.y() = origin.y() + i*resolution + cell_center_offset;
+          cell_centers_buff.push_back(p);
+       }
+      }
+
 
 
     //create grid within a bbx, 0 is indexed from top-left corner
@@ -118,4 +182,3 @@ namespace mdp_planner{
 }
 
 #endif
-

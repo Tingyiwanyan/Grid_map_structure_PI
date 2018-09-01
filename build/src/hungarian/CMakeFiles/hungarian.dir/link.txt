@@ -1,0 +1,2 @@
+/usr/bin/ar qc libhungarian.a  CMakeFiles/hungarian.dir/Assignment.cpp.o CMakeFiles/hungarian.dir/BipartiteGraph.cpp.o CMakeFiles/hungarian.dir/Hungarian.cpp.o CMakeFiles/hungarian.dir/PlotGraph.cpp.o CMakeFiles/hungarian.dir/Cgnuplot.cpp.o CMakeFiles/hungarian.dir/graph_hungarian.cpp.o
+/usr/bin/ranlib libhungarian.a

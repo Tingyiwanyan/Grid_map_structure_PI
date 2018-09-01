@@ -1,0 +1,2 @@
+/usr/bin/ar qc libinfo_methods.a  CMakeFiles/info_methods.dir/info_core.cc.o CMakeFiles/info_methods.dir/tsp_brute.cc.o CMakeFiles/info_methods.dir/gp_model.cc.o CMakeFiles/info_methods.dir/dp_solver.cc.o CMakeFiles/info_methods.dir/greedy_solver.cc.o CMakeFiles/info_methods.dir/random_solver.cc.o CMakeFiles/info_methods.dir/gp_model_old.cc.o
+/usr/bin/ranlib libinfo_methods.a

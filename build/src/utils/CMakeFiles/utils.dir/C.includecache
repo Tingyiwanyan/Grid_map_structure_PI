@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/utils/argparser.h
+stdio.h
+-
+assert.h
+-
+viz_tool/glm.h
+../include/utils/viz_tool/glm.h
+
+../include/viz_tool/glm.h
+GL/glut.h
+-
+OpenGl/gl.h
+-
+OpenGl/glu.h
+-
+GLUT/glut.h
+-
+
+/home/tingyi/Incremental-MFPT/src/utils/argparser.c
+utils/argparser.h
+/home/tingyi/Incremental-MFPT/src/utils/utils/argparser.h
+string.h
+-
+

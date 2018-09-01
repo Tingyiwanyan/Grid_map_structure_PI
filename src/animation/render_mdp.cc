@@ -1,6 +1,9 @@
 
 #include "animation/render_mdp.h"
 #include <chrono>
+#include "viz_tool/gldraw.h"
+#include <stdlib.h>
+#include <time.h>
 
 namespace gu = geometry_utils;
 using namespace std::chrono;
@@ -14,7 +17,7 @@ double originX = 0.0, originY = 0.0, radius = 11, angle = 0.314, circle_count = 
 
 
 /*
-// for quadrotor 
+// for quadrotor
 extern GLfloat RotorSpinAngle;
 extern GLfloat WheelSpinAngle;
 GLfloat RotorSpinSpeed = 60;
@@ -132,21 +135,21 @@ drawMDP_Policies(const MDP_Net::Ptr& _pNet, const RGB &custom_color){
         glTranslatef(_grids[s->id].x(), _grids[s->id].y(), arrow_pos_z);
         double arrow_scale = pMgr->getpParams()->getParamNode()["visualization"]["visual_arrow_scale"].as<double>();
         glScalef(arrow_scale, arrow_scale, 1); //changing z scale affects color/light?
-        //case NORTH: 
+        //case NORTH:
         if (s->actions[NORTH]) draw2DArrow(M_PI / 2, arrow_length, arrow_linewidth);
-        //case NE: 
+        //case NE:
         if (s->actions[NE]) draw2DArrow(M_PI / 4, arrow_length, arrow_linewidth);
-        //case EAST: 
+        //case EAST:
         if (s->actions[EAST]) draw2DArrow(0, arrow_length, arrow_linewidth);
-        //case SE: 
+        //case SE:
         if (s->actions[SE]) draw2DArrow(-M_PI / 4, arrow_length, arrow_linewidth);
-        //case SOUTH: 
+        //case SOUTH:
         if (s->actions[SOUTH]) draw2DArrow(-M_PI / 2, arrow_length, arrow_linewidth);
-        //case SW: 
+        //case SW:
         if (s->actions[SW]) draw2DArrow(-3 * M_PI / 4, arrow_length, arrow_linewidth);
-        //case WEST: 
+        //case WEST:
         if (s->actions[WEST]) draw2DArrow(M_PI, arrow_length, arrow_linewidth);
-        //case NW: 
+        //case NW:
         if (s->actions[NW]) draw2DArrow(3 * M_PI / 4, arrow_length, arrow_linewidth);
         glPopMatrix();
       } //for j
@@ -433,7 +436,6 @@ drawMDP_Policies(const MDP_Net::Ptr& _pNet, const RGB &custom_color){
           if(true)
           {
               std::cout << "Need to update policy locally" << std::endl;
-
               uint num_iterations = pMgr->getpParams()->getParamNode()["mdp_methods"]["num_iterations"].as<unsigned int>();
               for (uint i = 0; i < num_iterations; i++)
               {
@@ -530,12 +532,13 @@ drawMDP_Policies(const MDP_Net::Ptr& _pNet, const RGB &custom_color){
             pMgr->getNumRows(), pMgr->getNumCols());
 
     //mdp stuff
+
     if (pMgr->getpParams()->getParamNode()["mdp_methods"]["shared_policy"].as<bool>()) {
       drawMDP_States(pMgr->getpNet());
       if (pMgr->getpParams()->getParamNode()["visualization"]["show_policy"].as<bool>())
         drawMDP_Policies(pMgr->getpNet(), pMgr->getpNet()->getPolicyColor());
     } else {
-      for (unsigned int i = 0; i < pMgr->getpRobots().size(); i++) {    
+      for (unsigned int i = 0; i < pMgr->getpRobots().size(); i++) {
         drawMDP_States(pMgr->getpRobots()[i]->getpControl()->getpNet());
         if (pMgr->getpParams()->getParamNode()["visualization"]["show_policy"].as<bool>()) {
           drawMDP_Policies(pMgr->getpRobots()[0]->getpControl()->getpNet(), pMgr->getpRobots()[0]->getpControl()->getpNet()->getPolicyColor()); // one set of policy
@@ -547,6 +550,7 @@ drawMDP_Policies(const MDP_Net::Ptr& _pNet, const RGB &custom_color){
     //drawDynamicObstacle();
 
     //disturbance vector field
+    /*
     if (pMgr->getpParams()->getParamNode()["visualization"]["show_vec_field"].as<bool>()) {
       string method = pMgr->getpParams()->getParamNode()["method_manager"].as<string>();
       if (method.compare("imported_vf") == 0) {
@@ -562,9 +566,11 @@ drawMDP_Policies(const MDP_Net::Ptr& _pNet, const RGB &custom_color){
           drawStaticDisturbances(pMgr->getpDisturb()->getVecField(), ::Grids);
       }
     }
-
+    */
     //draw info map
+
     if (pMgr->getpInfo()) {
+    //if (5<10){
       drawInfoMap(pMgr->getpNet(), pMgr->getpInfo(), ::Grids);
     }
 
@@ -584,7 +590,9 @@ drawMDP_Policies(const MDP_Net::Ptr& _pNet, const RGB &custom_color){
     }
 
     //draw robot and trajectory, etc
+
     for (uint i = 0; i < pMgr->getpRobots().size(); i++) {
+      //std::cout<<"Im here in draw robot"<<std::endl;
       AUVmodel::Ptr r = pMgr->getpRobots()[i];
       AUVcontroller::Ptr pc = r->getpControl();
       //draw to-go waypoints
@@ -592,6 +600,9 @@ drawMDP_Policies(const MDP_Net::Ptr& _pNet, const RGB &custom_color){
       //draw trajectory
       drawTrajectory(pc->trajectory);
       //draw agent
+      //srand(time(NULL));
+      //int isecret = rand() %10 + 1;
+      //viz_tool::draw2DArrow(4+isecret,4,5);
       drawAgent(r->gettf2());
     }
 
@@ -657,11 +668,12 @@ drawMDP_Policies(const MDP_Net::Ptr& _pNet, const RGB &custom_color){
 
 //    static Transform2 dynamic_start_tf2, dynamic_goal_tf2;
     for (uint i = 0; i < pMgr->getpRobots().size(); i++) {
+      //std::cout<<"IM here in realtime"<<std::endl;
       AUVmodel::Ptr r = pMgr->getpRobots()[i];
       // Info Plan
       if (pMgr->getpParams()->getParamNode()["method_manager"].as<string>().compare("info_plan") == 0 &&
               pMgr->getpParams()->getParamNode()["macro_controller"].as<string>().compare("mdp_policy") == 0) {
-        
+          std::cout<<"Im here at info_plan"<<std::endl;
         mdp_planner::MDP_Net::Ptr pNet;
         if (!pMgr->getpParams()->getParamNode()["mdp_methods"]["shared_policy"].as<bool>()) {
           pNet = r->getpControl()->getpNet();
@@ -669,14 +681,14 @@ drawMDP_Policies(const MDP_Net::Ptr& _pNet, const RGB &custom_color){
           pNet = pMgr->getpNet();
         }
         Transform2 tf2 = r->gettf2();
-        
+
         if (pNet->getState(tf2.translation)->type == GOAL) {
           if (pMgr->getpInfo()->getGoals(i).empty()) {
             cout << "robot " << i << " finished all goals!" << endl;
             continue;
           }
-          cout << "robot " << i << " reached the goal " << tf2.translation << endl;
-          
+          std::cout << "robot " << i << " reached the goal " << tf2.translation << std::endl;
+
           // gggggggggggggggggggg
           vector<double> longitudes = pMgr->getpData()->getLongitudes(),
                   latitudes = pMgr->getpData()->getLatitudes();
@@ -947,6 +959,3 @@ drawMDP_Policies(const MDP_Net::Ptr& _pNet, const RGB &custom_color){
 
 
 } //end namespace
-
-
-

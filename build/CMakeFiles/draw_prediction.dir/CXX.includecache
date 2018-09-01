@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/tingyi/Incremental-MFPT/src/main/draw_prediction.cc
+iostream
+-
+fstream
+-
+string
+-
+vector
+-
+opencv2/highgui.hpp
+-
+opencv2/imgproc.hpp
+-
+

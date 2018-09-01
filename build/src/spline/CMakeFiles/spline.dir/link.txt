@@ -1,0 +1,2 @@
+/usr/bin/ar qc libspline.a  CMakeFiles/spline.dir/UnconstrainedSplineFit.cc.o CMakeFiles/spline.dir/spline_fit.cc.o
+/usr/bin/ranlib libspline.a

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmdp_methods.a  CMakeFiles/mdp_methods.dir/mdp_core.cc.o CMakeFiles/mdp_methods.dir/ssp.cc.o
+/usr/bin/ranlib libmdp_methods.a

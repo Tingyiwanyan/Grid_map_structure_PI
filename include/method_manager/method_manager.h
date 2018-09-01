@@ -55,7 +55,7 @@ public:
   //methods manager based on config yaml
   void methodManager(void);
 
-  //basic/standard MDP method 
+  //basic/standard MDP method
   void mdpCore(void);
 
   //method applying imported vector field such as ROMS data
@@ -73,16 +73,23 @@ private:
 
   utils::Parameters::Ptr	pParams;
   utils::DataLoader::Ptr	pData;
-  MDP_Grid2D::Ptr		pGrid2d;
-  MDP_Net::Ptr			pNet;
+  //MDP_Grid2D::Ptr		pGrid2d;
+  MDP_Grid2D::Ptr   pGrid2d;
+  //MDP_Grid2D::Ptr   pGrid2d_buffer;
+  MDP_Grid2D::Ptr   pGrid2d_buff;
+  //MDP_Net::Ptr			pNet;
+  MDP_Net::Ptr      pNet;
+  MDP_Net::Ptr      pNet_buff;
   Disturbance::Ptr 		pDisturb;
+  Disturbance::Ptr    pDisturb_buff;
   MDP::Ptr	 		pMDP;
+  MDP::Ptr      pMDP_buff;
   Info::Ptr			pInfo;
   SSP::Ptr			pSSP;
   vector<AUVmodel::Ptr> 	pRobots;
 
 private:
-  
+
   Vec3 bounds_xyz;
   int num_rows, num_cols;			//grid map dimension
 
@@ -91,4 +98,3 @@ private:
 
 
 #endif
-
