@@ -235,7 +235,7 @@ MDP::getQvalue(mdp_state_t* s, action_t act){
     }
 
     //here uniform action cost, can also be put in addSuccessorValue with percentage
-    s->q_values[act] -= action_cost;
+    //s->q_values[act] -= action_cost;
 
     return s->q_values[act];
 
@@ -1784,7 +1784,9 @@ MDP::valueIterationLocalStates(vector<mdp_state_t*>& _states, vector<int> states
 void
 MDP::policyIteration(vector<mdp_state_t*>& _states)
 {
+    int size = _states.size();
     int t = 0;
+    double value_total = 0;
     while (true)
     {
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
@@ -1792,6 +1794,7 @@ MDP::policyIteration(vector<mdp_state_t*>& _states)
         // policy evaluation
         while (true)
         {
+            value_total = 0;
             double delta = 0;
             for (mdp_state_t* state : _states)
             {
@@ -1814,8 +1817,16 @@ MDP::policyIteration(vector<mdp_state_t*>& _states)
                 //std::cout << "delta " << delta << std::endl;
                 break;
             }
+            for(mdp_state_t* state : _states)
+            {
+              if (state->type !=BODY && state->type!=START) // skip absorbing states
+              {
+                  continue;
+              }
+              value_total += state->optimal_value/size;
+            }
+            cout<<"value at this iteration is"<<value_total<<endl;
         }
-
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>( t2 - t1 ).count();
         cout << "\nTime Taken Iteration PI Pol Eva: " << duration/1000000.0 << " seconds" << endl;

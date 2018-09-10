@@ -621,7 +621,6 @@ void MethodManager::mdpCore(void){
 
 
 
-
   if (pParams->getParamNode()["macro_controller"].as<string>().compare("mdp_policy") == 0 && pParams->getParamNode()["mdp_methods"]["shared_policy"].as<bool>()) {
     pMDP_buff = MDP::Ptr(new MDP(pParams, pNet_buff, pDisturb_buff));
 
@@ -774,7 +773,7 @@ void MethodManager::mdpCore(void){
 
     bool pass_down_policy = pParams->getParamNode()["mdp_methods"]["pass_down_policy"].as<bool>();
 
-    if(adding_pp == true)
+    if(pass_down_policy == true)
     {
       for(uint i=0; i<(int)pGrid2d->cell_centers.size();i++)
       {
