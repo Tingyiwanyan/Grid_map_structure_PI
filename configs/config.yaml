@@ -135,6 +135,7 @@ mdp_methods:
   goal_reward: 100.0
   obst_penalty: 0 #-100.0
   epsilon: 1
+  resolution_layer: 10
   learning_rate: 0.1
   discount_factor: 0.99
   explore_rate: 50
@@ -183,8 +184,8 @@ environment:
     bound_y: 27
     bound_z: 27
   grids:
-    num_rows: 80
-    num_cols: 80
+    num_rows: 100
+    num_cols: 100
     num_iterations: 1000
   isSubSpace: 0
   partitions:

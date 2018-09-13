@@ -599,29 +599,49 @@ void MethodManager::mdpCore(void){
   num_rows = pParams->getParamNode()["environment"]["grids"]["num_rows"].as<unsigned int>();
   num_cols = pParams->getParamNode()["environment"]["grids"]["num_cols"].as<unsigned int>();
 
-  int num_rows_buff = num_rows/2;
-  int num_cols_buff = num_cols/2;
+  int resolution_layer = pParams->getParamNode()["mdp_methods"]["resolution_layer"].as<int>();;
+  int num_rows_buff = num_rows/resolution_layer;
+  int num_cols_buff = num_cols/resolution_layer;
+  double resolution = 2.0 * bounds_xyz.x() / num_cols;
 
   point2d_t origin(-bounds_xyz.x(), -bounds_xyz.y());
-  double resolution = 2.0 * bounds_xyz.x() / num_cols;
-  double resolution_buff = 2.0 * bounds_xyz.x() / num_cols_buff;
+  std::vector<MDP_Grid2D::Ptr> pGrid2d_vector;
+  std::vector<MDP::Ptr> pMDP_vector;
+  std::vector<MDP_Net::Ptr> pNet_vector;
+  std::vector<Disturbance::Ptr> pDisturb_vector;
+  pGrid2d = MDP_Grid2D::Ptr(new MDP_Grid2D(num_cols, num_rows, resolution, origin));
+  pNet = MDP_Net::Ptr(new MDP_Net(pGrid2d));
+  pDisturb = Disturbance::Ptr(new Disturbance(pParams, pGrid2d));
+  for(int scale = 0; scale < num_cols_buff-1; scale++)
+  {
+    cout<<"Im in"<<scale<<"initialization"<<endl;
+  //double resolution = 2.0 * bounds_xyz.x() / num_cols;
+  double resolution_buff = 2.0 * bounds_xyz.x() / (resolution_layer*(scale+1));
 
   cout << "Grid map dimension: " << num_rows_buff << "x" << num_cols_buff << "; origin: " << origin << endl;
-  pGrid2d_buff = MDP_Grid2D::Ptr(new MDP_Grid2D(num_cols_buff, num_rows_buff, resolution_buff, origin));
+  //pGrid2d_buff = std::vector<MDP_Grid2D::Ptr>(new MDP_Grid2D(num_cols_buff, num_rows_buff, resolution_buff, origin));
+  //pGrid2d_buff = MDP_Grid2D::Ptr(new MDP_Grid2D(num_cols_buff, num_rows_buff, resolution_buff, origin));
+  //pGrid2d_buff_vector.push_back(pGrid2d_buff);
+  pGrid2d_buff = MDP_Grid2D::Ptr(new MDP_Grid2D(resolution_layer*(scale+1), resolution_layer*(scale+1), resolution_buff, origin));
+  //pGrid2d_buff_vector.push_back(pGrid2d_buff);
+  //cout<<"first is"<<pGrid2d_buff_vector[0]->cell_centers.size()<<endl;
+  //cout<<"second is"<<pGrid2d_buff_vector[1]->cell_centers.size()<<endl;
+  //pGrid2d_buff.push_back(new MDP_Grid2D(num_cols_buff, num_rows_buff, resolution_buff, origin));
   pNet_buff = MDP_Net::Ptr(new MDP_Net(pGrid2d_buff));
   pDisturb_buff = Disturbance::Ptr(new Disturbance(pParams, pGrid2d_buff));
 
 
 
 
-  cout << "Grid map dimension: " << num_rows << "x" << num_cols << "; origin: " << origin << endl;
-  pGrid2d = MDP_Grid2D::Ptr(new MDP_Grid2D(num_cols, num_rows, resolution, origin));
-  pNet = MDP_Net::Ptr(new MDP_Net(pGrid2d));
-  pDisturb = Disturbance::Ptr(new Disturbance(pParams, pGrid2d));
+  //cout << "Grid map dimension: " << num_rows << "x" << num_cols << "; origin: " << origin << endl;
+  //pGrid2d = MDP_Grid2D::Ptr(new MDP_Grid2D(num_cols, num_rows, resolution, origin));
+  //pNet = MDP_Net::Ptr(new MDP_Net(pGrid2d));
+  //pDisturb = Disturbance::Ptr(new Disturbance(pParams, pGrid2d));
 
 
 
   if (pParams->getParamNode()["macro_controller"].as<string>().compare("mdp_policy") == 0 && pParams->getParamNode()["mdp_methods"]["shared_policy"].as<bool>()) {
+
     pMDP_buff = MDP::Ptr(new MDP(pParams, pNet_buff, pDisturb_buff));
 
     // set the state type
@@ -639,7 +659,11 @@ void MethodManager::mdpCore(void){
           pMDP_buff->fillTypeValue(pNet_buff->getState(tf2_goals[i].translation), GOAL, goal_value);
       }
     }
-
+    pMDP_vector.push_back(pMDP_buff);
+    pGrid2d_vector.push_back(pGrid2d_buff);
+    pNet_vector.push_back(pNet_buff);
+    pDisturb_vector.push_back(pDisturb_buff);
+/*
     pMDP = MDP::Ptr(new MDP(pParams, pNet, pDisturb));
 
     // set the state type
@@ -656,7 +680,27 @@ void MethodManager::mdpCore(void){
       else{
           pMDP->fillTypeValue(pNet->getState(tf2_goals[i].translation), GOAL, goal_value);
       }
+      */
     }
+  }
+
+  pMDP = MDP::Ptr(new MDP(pParams, pNet, pDisturb));
+
+  // set the state type
+  for (uint i = 0; i < tf2_starts.size(); i++) {
+    pNet->getState(tf2_starts[i].translation)->type = START;
+  }
+  for (uint i = 0; i < tf2_goals.size(); i++) {
+    double goal_value = pParams->getParamNode()["mdp_methods"]["goal_reward"].as<double>();
+    pNet->getState(tf2_goals[i].translation)->type = GOAL;
+    if(i==1){
+        highgoalindex = i;
+        pMDP->fillTypeValue(pNet->getState(tf2_goals[i].translation), GOAL, goal_value + 50);
+    }
+    else{
+        pMDP->fillTypeValue(pNet->getState(tf2_goals[i].translation), GOAL, goal_value);
+    }
+}
 
     // Including obstacles
     bool hasObs = pParams->getParamNode()["obstacles"]["hasObs"].as<bool>();
@@ -754,6 +798,7 @@ void MethodManager::mdpCore(void){
 
     }
 
+
     // id
   //    for (int i = pGrid2d->n_rows - 1; i >= 0; i--)
   //    {
@@ -764,17 +809,67 @@ void MethodManager::mdpCore(void){
   //      std::cout << std::endl;
   //    }
 
+/*
     high_resolution_clock::time_point t1_buff = high_resolution_clock::now();
     pMDP_buff->iterations();
     pMDP_buff->optimalActionTransitionDistribution(pNet_buff->mdp_states);
     high_resolution_clock::time_point t2_buff = high_resolution_clock::now();
     auto duration_buff = duration_cast<microseconds>( t2_buff - t1_buff ).count();
     cout << "\nTime Taken buff: " << duration_buff/1000000.0 << " seconds" << endl;
-
+*/
     bool pass_down_policy = pParams->getParamNode()["mdp_methods"]["pass_down_policy"].as<bool>();
+
 
     if(pass_down_policy == true)
     {
+      for(int scale2=0; scale2 < num_cols_buff-1; scale2++)
+      {
+        cout<<"Im in layer"<<scale2<<endl;
+        high_resolution_clock::time_point t1_buff = high_resolution_clock::now();
+        pMDP_vector[scale2]->iterations();
+        pMDP_vector[scale2]->optimalActionTransitionDistribution(pNet_vector[scale2]->mdp_states);
+        high_resolution_clock::time_point t2_buff = high_resolution_clock::now();
+        auto duration_buff = duration_cast<microseconds>( t2_buff - t1_buff ).count();
+        cout << "\nTime Taken buff: " << duration_buff/1000000.0 << " seconds" << endl;
+        if(scale2 == num_cols_buff-2)
+        {
+          break;
+        }
+      for(uint i=0; i<(int)pGrid2d_vector[scale2+1]->cell_centers.size();i++)
+      {
+        //std::cout<<"IM here in first for"<<std::endl;
+        int index = -1;
+        float distance_optimal = 20000;
+        for(uint j=0; j<(int)pGrid2d_vector[scale2]->cell_centers.size();j++)
+        {
+          //std::cout<<"Im here in second for"<<std::endl;
+          float x_dist = pGrid2d_vector[scale2+1]->cell_centers[i][0]-pGrid2d_vector[scale2]->cell_centers[j][0];
+          //std::cout<<"x_dist"<<x_dist<<std::endl;
+          float y_dist = pGrid2d_vector[scale2+1]->cell_centers[i][1]-pGrid2d_vector[scale2]->cell_centers[j][1];
+          //std::cout<<"y_dist"<<y_dist<<std::endl;
+          float distance = std::sqrt(x_dist*x_dist+y_dist*y_dist);
+          //std::cout<<"This is distance"<<distance<<std::endl;
+          if(distance < distance_optimal)
+          {
+            distance_optimal = distance;
+            index = j;
+          }
+        }
+        //std::cout<<"index is"<<index<<endl;
+        if(index == -1)
+        {
+          continue;
+        }
+        pNet_vector[scale2+1]->mdp_states[i]->optimal_action = pNet_vector[scale2]->mdp_states[index]->optimal_action;
+      }
+    }
+    }
+/*
+    if(pass_down_policy == true)
+    {
+      for(int scale2=0; scale < num_cols_buff-1; scale++)
+      {
+
       for(uint i=0; i<(int)pGrid2d->cell_centers.size();i++)
       {
         //std::cout<<"IM here in first for"<<std::endl;
@@ -803,12 +898,45 @@ void MethodManager::mdpCore(void){
         pNet->mdp_states[i]->optimal_action = pNet_buff->mdp_states[index]->optimal_action;
       }
     }
+    }
+    */
 
       //std::cout<<"This is index"<<index<<std::endl;
       //std::cout<<"Im here in assign optimal value"<<std::endl;
       //pNet_buffer->mdp_states[i]->optimal_value = pNet->mdp_states[index]->optimal_value;
 
+    cout<<"Im in computing pMDP"<<endl;
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    if(pass_down_policy == true)
+    {
+      for(uint i=0; i<(int)pGrid2d->cell_centers.size();i++)
+      {
+        //std::cout<<"IM here in first for"<<std::endl;
+        int index = -1;
+        float distance_optimal = 20000;
+        for(uint j=0; j<(int)pGrid2d_vector[num_cols_buff-2]->cell_centers.size();j++)
+        {
+          //std::cout<<"Im here in second for"<<std::endl;
+          float x_dist = pGrid2d->cell_centers[i][0]-pGrid2d_vector[num_cols_buff-2]->cell_centers[j][0];
+          //std::cout<<"x_dist"<<x_dist<<std::endl;
+          float y_dist = pGrid2d->cell_centers[i][1]-pGrid2d_vector[num_cols_buff-2]->cell_centers[j][1];
+          //std::cout<<"y_dist"<<y_dist<<std::endl;
+          float distance = std::sqrt(x_dist*x_dist+y_dist*y_dist);
+          //std::cout<<"This is distance"<<distance<<std::endl;
+          if(distance < distance_optimal)
+          {
+            distance_optimal = distance;
+            index = j;
+          }
+        }
+        //std::cout<<"index is"<<index<<endl;
+        if(index == -1)
+        {
+          continue;
+        }
+        pNet->mdp_states[i]->optimal_action = pNet_vector[num_cols_buff-2]->mdp_states[index]->optimal_action;
+      }
+    }
     pMDP->iterations();
     pMDP->optimalActionTransitionDistribution(pNet->mdp_states);
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
@@ -883,7 +1011,7 @@ void MethodManager::mdpCore(void){
 
 
     }
-  }
+
 
   // print map indices
   std::cout << "\nmap indices" << std::endl;
@@ -896,6 +1024,7 @@ void MethodManager::mdpCore(void){
 
 
   vector<viz_tool::RGB> colors = viz_tool::generateRGB(tf2_starts.size(), 'r');
+
   for (uint i = 0; i < tf2_starts.size(); i++) {
     AUVmodel::Ptr auv = AUVmodel::Ptr(new AUVmodel(pParams, pDisturb, pNet));
     if (pParams->getParamNode()["macro_controller"].as<string>().compare("mdp_policy") == 0 && !pParams->getParamNode()["mdp_methods"]["shared_policy"].as<bool>()) {

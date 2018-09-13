@@ -235,7 +235,7 @@ MDP::getQvalue(mdp_state_t* s, action_t act){
     }
 
     //here uniform action cost, can also be put in addSuccessorValue with percentage
-    //s->q_values[act] -= action_cost;
+    s->q_values[act] -= action_cost;
 
     return s->q_values[act];
 
@@ -1792,6 +1792,14 @@ MDP::policyIteration(vector<mdp_state_t*>& _states)
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
         // policy evaluation
+        for(mdp_state_t* state : _states)
+        {
+          if (state->type !=BODY && state->type!=START) // skip absorbing states
+          {
+              continue;
+          }
+          state->optimal_value = 0;
+        }
         while (true)
         {
             value_total = 0;
@@ -1825,7 +1833,7 @@ MDP::policyIteration(vector<mdp_state_t*>& _states)
               }
               value_total += state->optimal_value/size;
             }
-            cout<<"value at this iteration is"<<value_total<<endl;
+            //cout<<"value at this iteration is"<<value_total<<endl;
         }
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>( t2 - t1 ).count();
