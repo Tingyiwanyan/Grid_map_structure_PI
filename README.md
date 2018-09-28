@@ -1,4 +1,4 @@
-# Incremental-MFPT
+# Grid_map_structure_PI
 Reachability and Differential based Heuristics for Solving Markov Decision Processes
 
 parameter config file is under ./configs
