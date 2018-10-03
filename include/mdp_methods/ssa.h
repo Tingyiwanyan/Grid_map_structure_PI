@@ -83,25 +83,36 @@ namespace mdp_planner
       std::vector<Policy_Node*> self_Node;
       std::vector<action_t> acts;
       float state_value;
+      float last_state_value;
       Q_action_tree_node* Q_a_value;
       action_t optimal_act;
+      action_t last_optimal_act;
       mdp_state_t *regress_node;
       Policy_Node(mdp_state_t *s, action_t act, Policy_Node *Par)
       {
         regress_node = s;
         state_value = 0.0;
+        last_state_value = 0.0;
         optimal_act = act;
+        last_optimal_act = act;
         parent = Par;
       }
     };
-    float compute_Q_value(Policy_Node* Node,Policy_Node* root, const MDP_Net::Ptr& pNet);
+
     //float compute_Q_value(Policy_Node* Node,Policy_Node* root, const MDP_Net::Ptr& pNet);
-    void SSA(Policy_Node* root,std::vector<Policy_Node*> queue_node, const MDP_Net::Ptr& pNet);
-    //void SSA(std::vector<Policy_Node*> old_queue,std::vector<Policy_Node*> queue_node, const MDP_Net::Ptr& pNet);
-    void update_policy(Policy_Node* root, std::vector<Policy_Node*> queue_node, const MDP_Net::Ptr& pNet);
+    float compute_Q_value(Policy_Node* Node,action_t act,std::vector<Policy_Node*> old_queue, const MDP_Net::Ptr& pNet);
+    //void SSA(Policy_Node* root,std::vector<Policy_Node*> queue_node, const MDP_Net::Ptr& pNet);
+    void SSA(std::vector<Policy_Node*> old_queue,std::vector<Policy_Node*> queue_node, const MDP_Net::Ptr& pNet);
+    //void update_policy(Policy_Node* root, std::vector<Policy_Node*> queue_node, const MDP_Net::Ptr& pNet);
+    void update_policy(std::vector<Policy_Node*> old_queue, std::vector<Policy_Node*> queue_node, const MDP_Net::Ptr& pNet);
     void GMSPI(mdp_state_t* goal, const MDP_Net::Ptr& pNet);
     bool find_index(std::vector<int> index, int k);
     bool check_predecessor(Policy_Node* queue,Policy_Node* node);
+    bool check_policy_converge(std::vector<Policy_Node*> new_queue);
+    void Policy_iteration(vector<mdp_states*> &states);
+    float compute_Q_value_PI(mdp_state_t* s,action_t act);
+    bool check_policy_converge_PI(vector<mdp_state*>& states);
+
 }
 
 #endif

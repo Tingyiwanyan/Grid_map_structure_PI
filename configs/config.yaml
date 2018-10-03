@@ -184,8 +184,8 @@ environment:
     bound_y: 27
     bound_z: 27
   grids:
-    num_rows: 70
-    num_cols: 70
+    num_rows: 100
+    num_cols: 100
     num_iterations: 1000
   isSubSpace: 0
   partitions:
