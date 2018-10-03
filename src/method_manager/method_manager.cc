@@ -7,6 +7,7 @@
 #include "info_methods/dp_solver.h"
 #include "info_methods/greedy_solver.h"
 #include "viz_tool/glfunc.h"
+#include "mdp_methods/ssa.h"
 
 #include <boost/filesystem.hpp>
 #include <vector>
@@ -15,6 +16,7 @@ extern std::string dir_name;
 int highgoalindex = -1, r;
 
 using namespace std::chrono;
+using namespace mdp_planner;
 
 MethodManager::MethodManager(void) {
 
@@ -603,6 +605,7 @@ void MethodManager::mdpCore(void){
   int num_rows_buff = num_rows/resolution_layer;
   int num_cols_buff = num_cols/resolution_layer;
   double resolution = 2.0 * bounds_xyz.x() / num_cols;
+  mdp_state_t* goal;
 
   point2d_t origin(-bounds_xyz.x(), -bounds_xyz.y());
   std::vector<MDP_Grid2D::Ptr> pGrid2d_vector;
@@ -701,6 +704,9 @@ void MethodManager::mdpCore(void){
         pMDP->fillTypeValue(pNet->getState(tf2_goals[i].translation), GOAL, goal_value);
     }
 }
+  goal = pNet->getState(tf2_goals[0].translation);
+  std::cout<<"Im here at GMSPI"<<std::endl;
+  mdp_planner::GMSPI(goal, pNet);
 
     // Including obstacles
     bool hasObs = pParams->getParamNode()["obstacles"]["hasObs"].as<bool>();
@@ -864,6 +870,7 @@ void MethodManager::mdpCore(void){
       }
     }
     }
+
 /*
     if(pass_down_policy == true)
     {
@@ -937,8 +944,8 @@ void MethodManager::mdpCore(void){
         pNet->mdp_states[i]->optimal_action = pNet_vector[num_cols_buff-2]->mdp_states[index]->optimal_action;
       }
     }
-    pMDP->iterations();
-    pMDP->optimalActionTransitionDistribution(pNet->mdp_states);
+  //  pMDP->iterations();
+  //  pMDP->optimalActionTransitionDistribution(pNet->mdp_states);
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>( t2 - t1 ).count();
     cout << "\nTime Taken: " << duration/1000000.0 << " seconds" << endl;

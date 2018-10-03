@@ -8,6 +8,7 @@
 #include "vehicle/vehicle_model.h"
 #include "mdp_methods/mdp_core.h"
 #include "mdp_methods/ssp.h"
+#include "mdp_methods/ssa.h"
 #include "disturbance/disturbance.h"
 #include "info_methods/info_core.h"
 #include "geometry_utils/Pose.h"

@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -330,15 +330,15 @@ stdlib.h
 stdio.h
 -
 
-/home/tingyi/Incremental-MFPT/src/vehicle/vehicle_controller.cc
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/vehicle/vehicle_controller.cc
 vehicle/vehicle_controller.h
-/home/tingyi/Incremental-MFPT/src/vehicle/vehicle/vehicle_controller.h
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/vehicle/vehicle/vehicle_controller.h
 
-/home/tingyi/Incremental-MFPT/src/vehicle/vehicle_model.cc
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/vehicle/vehicle_model.cc
 random
 -
 vehicle/vehicle_model.h
-/home/tingyi/Incremental-MFPT/src/vehicle/vehicle/vehicle_model.h
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/vehicle/vehicle/vehicle_model.h
 
 /usr/include/eigen3/Eigen/Cholesky
 Core

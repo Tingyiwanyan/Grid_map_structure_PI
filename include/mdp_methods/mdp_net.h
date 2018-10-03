@@ -121,49 +121,49 @@ namespace mdp_planner{
        #ifdef CELL_BEGIN_FROM_BOTTOM_LEFT
         //north
         s->successors[NORTH] = (i + nc < mdp_states.size()) ? mdp_states[i + nc] : s;
-        s->successors[NORTH]->predecessors.insert(s);
+        s->successors[NORTH]->predecessors.push_back(s);
         //north east
         s->successors[NE] = ( (i + nc < mdp_states.size()) && (i%nc != nc - 1) ) ? mdp_states[i + nc + 1] : s;
-        s->successors[NE]->predecessors.insert(s);
+        s->successors[NE]->predecessors.push_back(s);
         //north west
         s->successors[NW] = ( (i + nc < mdp_states.size()) && (i%nc != 0) ) ? mdp_states[i + nc - 1] : s;
-        s->successors[NW]->predecessors.insert(s);
+        s->successors[NW]->predecessors.push_back(s);
         //south
         s->successors[SOUTH] = (i - nc >= 0) ? mdp_states[i - nc] : s;
-        s->successors[SOUTH]->predecessors.insert(s);
+        s->successors[SOUTH]->predecessors.push_back(s);
         //south east
         s->successors[SE] = ( (i - nc >= 0) && (i%nc != nc - 1) ) ? mdp_states[i - nc + 1] : s;
-        s->successors[SE]->predecessors.insert(s);
+        s->successors[SE]->predecessors.push_back(s);
         //south west
         s->successors[SW] = ( (i - nc >= 0) && (i%nc != 0) ) ? mdp_states[i - nc - 1] : s;
-        s->successors[SW]->predecessors.insert(s);
+        s->successors[SW]->predecessors.push_back(s);
        #else
 	//north
 	s->successors[NORTH] = (i - nc >= 0) ? mdp_states[i - nc] : s;
-	s->successors[NORTH]->predecessors.insert(s);
+	s->successors[NORTH]->predecessors.push_back(s);
         //north east
         s->successors[NE] = ( (i - nc >= 0) && (i%nc != nc - 1) ) ? mdp_states[i - nc + 1] : s;
-        s->successors[NE]->predecessors.insert(s);
+        s->successors[NE]->predecessors.push_back(s);
         //north west
         s->successors[NW] = ( (i - nc >= 0) && (i%nc != 0) ) ? mdp_states[i - nc - 1] : s;
-        s->successors[NW]->predecessors.insert(s);
+        s->successors[NW]->predecessors.push_back(s);
 	//south
 	s->successors[SOUTH] = (i + nc < mdp_states.size()) ? mdp_states[i + nc] : s;
-	s->successors[SOUTH]->predecessors.insert(s);
+	s->successors[SOUTH]->predecessors.push_back(s);
         //south east
         s->successors[SE] = ( (i + nc < mdp_states.size()) && (i%nc != nc - 1) ) ? mdp_states[i + nc + 1] : s;
-        s->successors[SE]->predecessors.insert(s);
+        s->successors[SE]->predecessors.push_back(s);
         //south west
         s->successors[SW] = ( (i + nc < mdp_states.size()) && (i%nc != 0) ) ? mdp_states[i + nc - 1] : s;
-        s->successors[SW]->predecessors.insert(s);
+        s->successors[SW]->predecessors.push_back(s);
        #endif
 
         //east
         s->successors[EAST] = (i%nc != nc - 1) ? mdp_states[i+1] : s;
-        s->successors[EAST]->predecessors.insert(s);
+        s->successors[EAST]->predecessors.push_back(s);
         //west
         s->successors[WEST] = (i%nc != 0) ? mdp_states[i-1] : s;
-        s->successors[WEST]->predecessors.insert(s);
+        s->successors[WEST]->predecessors.push_back(s);
       }//for i
 
     }

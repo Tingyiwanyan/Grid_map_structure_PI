@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -180,11 +180,11 @@ functions.h
 yaml-cpp/yaml.h
 -
 
-/home/tingyi/Incremental-MFPT/src/disturbance/disturbance.cc
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/disturbance/disturbance.cc
 random
 -
 disturbance/disturbance.h
-/home/tingyi/Incremental-MFPT/src/disturbance/disturbance/disturbance.h
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/disturbance/disturbance/disturbance.h
 
 /usr/include/eigen3/Eigen/Cholesky
 Core

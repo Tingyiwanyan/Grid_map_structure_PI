@@ -3,8 +3,9 @@ cmake_minimum_required(VERSION 2.6)
 set(PROJ_NAME ${PROJ_MDP_METHODS})
 project(${PROJ_NAME})
 
-set(${PROJ_NAME}_SRCS 
+set(${PROJ_NAME}_SRCS
   mdp_core.cc
+  SSA.cc
   ssp.cc
 )
 

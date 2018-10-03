@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -14,7 +14,7 @@ vector
 armadillo
 -
 
-/home/tingyi/Incremental-MFPT/src/spline/UnconstrainedSplineFit.cc
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/spline/UnconstrainedSplineFit.cc
 iostream
 -
 ctime
@@ -24,9 +24,9 @@ math.h
 unistd.h
 -
 spline/UnconstrainedSplineFit.h
-/home/tingyi/Incremental-MFPT/src/spline/spline/UnconstrainedSplineFit.h
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/spline/spline/UnconstrainedSplineFit.h
 
-/home/tingyi/Incremental-MFPT/src/spline/spline_fit.cc
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/spline/spline_fit.cc
 iostream
 -
 fstream
@@ -34,5 +34,5 @@ fstream
 ctime
 -
 spline/UnconstrainedSplineFit.h
-/home/tingyi/Incremental-MFPT/src/spline/spline/UnconstrainedSplineFit.h
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/spline/spline/UnconstrainedSplineFit.h
 

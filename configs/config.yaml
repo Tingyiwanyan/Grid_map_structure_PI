@@ -127,8 +127,8 @@ obstacles:
 mdp_methods:
   # currently only value iteration method {value, policy, LP}
   shared_policy: true     # for multi-vehicle, only one set of policy
-  pass_down_policy: true      #adding whether passing down policy
-  iteration_method: PI #VI #MFPT-VI #policy #value #priori #prioriPI #policyLP #valueMFPTSub #valueMFPTD #prioriD #qlearning (350000 [279874]) #MFPTQL (300,100) #DYNA (10000[10529 {k=10}]) #MFPTDYNA (800,100)
+  pass_down_policy: false      #adding whether passing down policy
+  iteration_method: VI #MFPT-VI #policy #value #priori #prioriPI #policyLP #valueMFPTSub #valueMFPTD #prioriD #qlearning (350000 [279874]) #MFPTQL (300,100) #DYNA (10000[10529 {k=10}]) #MFPTDYNA (800,100)
   num_iterations: 10000
   num_trials: 35000000
   action_cost: 1.0
@@ -184,8 +184,8 @@ environment:
     bound_y: 27
     bound_z: 27
   grids:
-    num_rows: 100
-    num_cols: 100
+    num_rows: 70
+    num_cols: 70
     num_iterations: 1000
   isSubSpace: 0
   partitions:

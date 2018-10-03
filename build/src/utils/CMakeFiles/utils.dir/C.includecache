@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -24,9 +24,9 @@ OpenGl/glu.h
 GLUT/glut.h
 -
 
-/home/tingyi/Incremental-MFPT/src/utils/argparser.c
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/utils/argparser.c
 utils/argparser.h
-/home/tingyi/Incremental-MFPT/src/utils/utils/argparser.h
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/utils/utils/argparser.h
 string.h
 -
 

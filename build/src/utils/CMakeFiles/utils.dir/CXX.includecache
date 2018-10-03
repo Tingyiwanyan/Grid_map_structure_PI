@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -112,21 +112,21 @@ functions.h
 yaml-cpp/yaml.h
 -
 
-/home/tingyi/Incremental-MFPT/src/utils/clock.cc
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/utils/clock.cc
 utils/clock.h
-/home/tingyi/Incremental-MFPT/src/utils/utils/clock.h
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/utils/utils/clock.h
 
-/home/tingyi/Incremental-MFPT/src/utils/data_loader.cc
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/utils/data_loader.cc
 netcdf
 -
 utils/data_loader.h
-/home/tingyi/Incremental-MFPT/src/utils/utils/data_loader.h
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/utils/utils/data_loader.h
 
-/home/tingyi/Incremental-MFPT/src/utils/parameters.cc
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/utils/parameters.cc
 iostream
 -
 utils/parameters.h
-/home/tingyi/Incremental-MFPT/src/utils/utils/parameters.h
+/home/tingyi/GMSPI/Grid_map_structure_PI/src/utils/utils/parameters.h
 
 /usr/include/eigen3/Eigen/Cholesky
 Core

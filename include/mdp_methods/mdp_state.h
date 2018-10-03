@@ -54,7 +54,7 @@ namespace mdp_planner{
 
     vector<bool> actions; 		// NUM_ACTION actions, true means an action in selected direction
     vector<MDP_State*> successors;	// default null, can be itself
-    set<MDP_State*> predecessors;	// default null, can be itself
+    vector<MDP_State*> predecessors;	// default null, can be itself
     vector<double> probs;		// transition probabilities, default 0
     vector<double> post_probs;
     vector<int> action_count;
@@ -102,7 +102,7 @@ namespace mdp_planner{
 
     // return a unit vector specifying direction (assume origin is bottom-left)
     // if ZERO, then 0 vector returned. use only x-y plane here, z=0
-    
+
 
     static geometry_utils::Vec2 getActionVector(action_t in) {
       // on horizontal plane, z=0;

@@ -223,6 +223,8 @@ MDP::getPostTransitionModel(mdp_state_t* s, action_t act, const Vec2& v_disturb)
     //cout<<s->post_probs<<endl;
 }
 
+
+
 double
 MDP::getQvalue(mdp_state_t* s, action_t act){
 
@@ -329,12 +331,16 @@ MDP::updateStateRecords(mdp_state_t* s){
             }
         }
 
+
         //fill the max value as current value
         s->optimal_value = max_val;
+
         //cout<<"maxval: "<<max_val<<endl;
 
         //set current actions
         std::fill(s->actions.begin(), s->actions.end(), false);
+
+
         //then for all actions that has value/effect of == max_value, set true
         for(uint j=0; j<s->actions.size(); j++){
             if(fabs(s->q_values[j] - max_val) < EPSILON){
@@ -385,7 +391,7 @@ MDP::updateStateRecordsQLearning(mdp_state_t* s){
 
 void
 MDP::iterations(void){
-    string config_file("/home/tingyi/Incremental-MFPT/configs/config.yaml");
+    string config_file("../configs/config.yaml");
     pParams = utils::Parameters::Ptr(new utils::Parameters(config_file));
 
     cout<<"need to finish "<<num_iters<<" iterations."<<endl;
