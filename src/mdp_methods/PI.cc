@@ -20,19 +20,22 @@ using namespace geometry_utils;
 using namespace mdp_planner;
 
 
-bool mdp_planner::check_policy_converge(std::vector<Policy_Node*> new_queue)
+bool mdp_planner::check_policy_converge_PI(std::vector<mdp_state_t*>& states)
 {
-  for(int i=0;i<new_queue.size();i++)
+  for(std::vector<mdp_state_t*>::iterator itr=states.begin();itr!=states.end();itr++)
   {
-    if(new_queue[i]->optimal_act != new_queue[i]->last_optimal_act)
+    mdp_state_t *s = *itr;
+    if(s->type == BODY || s->type == START){
+    if(s->optimal_action != s->last_optimal_action)
     {
       return true;
     }
   }
+  }
   return false;
 }
 
-float mdp_planner::compute_Q_value_PI(mdp_state_t* s,action_t act)
+float mdp_planner::compute_Q_value_PI(mdp_state_t* s,action_t act,const MDP_Net::Ptr& pNet)
 {
   float state_value = 0;
   Vec2 v_app = mdp_state_t::getActionVector(act);
@@ -49,7 +52,7 @@ float mdp_planner::compute_Q_value_PI(mdp_state_t* s,action_t act)
         float cos_theta = v_app.dot(v_pre)/(v_app.norm()*v_pre.norm());
         if(cos_theta > 0.9)
         {
-          state_value = state_value + 0.8*0.9*old_queue[i]->state_value;
+          state_value = state_value + 0.8*0.9*s->successors[i]->optimal_value;
         }
         else
         {
@@ -60,10 +63,10 @@ float mdp_planner::compute_Q_value_PI(mdp_state_t* s,action_t act)
   return state_value;
 }
 
-void mdp_planner::Policy_iteration(vector<mdp_state_t*>& states)
+void mdp_planner::Policy_iteration(std::vector<mdp_state_t*>& states,const MDP_Net::Ptr& pNet)
 {
   srand((unsigned)time(0));
-  for(vector<mdp_state_t*>::iterator itr=states.begin();itr!=states.end();itr++)
+  for(std::vector<mdp_state_t*>::iterator itr=states.begin();itr!=states.end();itr++)
   {
     int random_act_num = rand()%8;
     //std::cout<<"act is"<<random_act_num<<std::endl;
@@ -99,17 +102,17 @@ void mdp_planner::Policy_iteration(vector<mdp_state_t*>& states)
     }
     mdp_state_t *s = *itr;
     s->optimal_action = random_act;
-    s->last_optimal_acttion = random_act;
+    s->last_optimal_action = random_act;
   }
   float error = 10;
-  while(error<0.1)
+  while(error>0.1)
   {
-    error = 0
-    for(vector<mdp_state_t*>::iterator itr=states.begin();itr!=states.end();itr++)
+    error = 0;
+    for(std::vector<mdp_state_t*>::iterator itr=states.begin();itr!=states.end();itr++)
     {
         mdp_state_t *s = *itr;
         float new_value;
-        new_value = mdp_planner::compute_Q_value_PI(s,s->optimal_action);
+        new_value = mdp_planner::compute_Q_value_PI(s,s->optimal_action,pNet);
         float error_temp = std::abs(new_value-s->optimal_value);
         s->optimal_value = new_value;
         if(error_temp>error)
@@ -118,11 +121,80 @@ void mdp_planner::Policy_iteration(vector<mdp_state_t*>& states)
         }
     }
   }
-  for(vector<mdp_state_t*>::iterator itr=states.begin();itr!=states.end();itr++)
+  for(std::vector<mdp_state_t*>::iterator itr=states.begin();itr!=states.end();itr++)
   {
+    mdp_state_t *s = *itr;
+    action_t opt_act=s->optimal_action;
+    float state_value = s->optimal_value;
+    std::cout<<"old_state_value"<<s->optimal_value<<std::endl;
+    for(int j=0;j<8;j++)
+    {
+      int k = j+1;
+    //  queue_node[i]->optimal_act=(action_t)k;
+      float state_value_temp = mdp_planner::compute_Q_value_PI(s,(action_t)k,pNet);
+      std::cout<<"value_temp "<<state_value_temp<<std::endl;
+      if(state_value_temp>state_value)
+      {
+        opt_act = (action_t)k;
+        state_value=state_value_temp;
+      }
+    }
 
+    s->optimal_action=opt_act;
   }
+ while(check_policy_converge_PI(states))
+  {
+    std::cout<<"Im here at policy update"<<std::endl;
+    for(std::vector<mdp_state_t*>::iterator itr=states.begin();itr!=states.end();itr++)
+    {
+        mdp_state_t *s = *itr;
+        s->last_optimal_action=s->optimal_action;
+    }
+    float error = 10;
+    while(error>0.1)
+    {
+      //std::cout<<"Im here in policy iteration"<<std::endl;
+      error = 0;
+      for(std::vector<mdp_state_t*>::iterator itr=states.begin();itr!=states.end();itr++)
+      {
+          mdp_state_t *s = *itr;
+          float new_value;
+          new_value = mdp_planner::compute_Q_value_PI(s,s->optimal_action,pNet);
+          std::cout<<"new value "<<new_value<<std::endl;
+          float error_temp = std::abs(new_value-s->optimal_value);
+          s->optimal_value = new_value;
+          if(error_temp>error)
+          {
+            error = error_temp;
+          }
+      }
+    }
+    for(std::vector<mdp_state_t*>::iterator itr=states.begin();itr!=states.end();itr++)
+    {
+      mdp_state_t *s = *itr;
+      action_t opt_act=s->optimal_action;
+      float state_value = s->optimal_value;
+      std::cout<<"old_state_value"<<state_value<<std::endl;
+      for(int j=0;j<8;j++)
+      {
+        int k = j+1;
+      //  queue_node[i]->optimal_act=(action_t)k;
+        float state_value_temp = mdp_planner::compute_Q_value_PI(s,(action_t)k,pNet);
+        std::cout<<"value_temp "<<state_value_temp<<std::endl;
+        if(state_value_temp>state_value)
+        {
+          opt_act = (action_t)k;
+          state_value=state_value_temp;
+        }
+      }
 
-
-
+      s->optimal_action=opt_act;
+    }
+  }
+  for(std::vector<mdp_state_t*>::iterator itr=states.begin();itr!=states.end();itr++)
+  {
+      mdp_state_t *s = *itr;
+      action_t opt_act = s->optimal_action;
+      s->actions[opt_act]=true;
+  }
 }

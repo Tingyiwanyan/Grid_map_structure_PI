@@ -25,6 +25,7 @@ public:
 
   typedef boost::shared_ptr<MethodManager> Ptr;
   typedef boost::shared_ptr<const MethodManager> ConstPtr;
+  double *states_fpt_final;
 
   MethodManager(void);
   virtual ~MethodManager(void);

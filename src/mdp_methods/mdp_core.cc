@@ -415,7 +415,7 @@ MDP::iterations(void){
     {
         uint i;
         num_iters = pParams->getParamNode()["environment"]["grids"]["num_iterations"].as<unsigned int>();
-        for ( i = 0; i < num_iters; i++)
+        for ( i = 0; i < 1000; i++)
         {
             //cout << i << " " << std::flush;
             double d = valueIterationMFPT(pNet->mdp_states,i);
@@ -436,7 +436,7 @@ MDP::iterations(void){
     else if (iter_method.compare("D-MFPT-VI") == 0)
     {
         uint i;
-        for ( i = 0; i < 1000; i++)
+        for ( i = 0; i < 2; i++)
         {
             double d = valueIterationMFPTD(pNet->mdp_states,i);
             cout << d << endl;
@@ -880,17 +880,23 @@ MDP::valueIterationMFPT(vector<mdp_state_t*>& _states, int iteration_num, string
     tf2_goals_1.push_back(Transform2(vec1[0], vec1[1], vec1[2]));
 
     if(direction=="forward"){
-
+        cout<<"Im here in MFPT"<<std::endl;
         if(iteration_num >= 0 && iteration_num < 10000 && iteration_num % 1 == 0){
             SSP::Ptr pSSP = SSP::Ptr(new SSP(pParams, pNet, pDisturb));
-
             high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
             _prioritizedstates.clear();
             optimalActionTransitionDistribution(_states);
             pSSP->initTransMatrix();
             double fpt_val_n = pSSP->meanFirstPassageTime(pNet->getState(tf2_starts_1[0].translation), pNet->getState(tf2_goals_1[0].translation)->id);
-
+            /*
+            for (int i=0;i< pNet->n_rows; i++) {
+              for (int j = 0; j < pNet->n_cols; j++) {
+                std::cout <<pSSP->states_fpt_final[j+i*pNet->n_rows]  << " ";
+              }
+              std::cout << std::endl;
+            }
+            */
             high_resolution_clock::time_point t2 = high_resolution_clock::now();
             auto duration = duration_cast<microseconds>( t2 - t1 ).count();
             cout << "\nTime Taken Iteration MFPT-VI FPT: " << duration/1000000.0 << " seconds" << endl;

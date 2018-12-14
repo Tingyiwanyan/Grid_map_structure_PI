@@ -25,6 +25,7 @@ namespace mdp_planner
 
     typedef boost::shared_ptr<MDP> Ptr;
     typedef boost::shared_ptr<const MDP> ConstPtr;
+    double *states_fpt_final;
 
   protected:
 
@@ -33,7 +34,7 @@ namespace mdp_planner
     Disturbance::Ptr		pDisturb;
     mdp_state_t *start_state, *goal_state;		//spawned stand-alone start/goal states
 
-    string iter_method;		//value vs. policy vs LP, etc    
+    string iter_method;		//value vs. policy vs LP, etc
     uint num_iters;		//num of value iterations
 
     double action_cost;
@@ -52,20 +53,20 @@ namespace mdp_planner
     //fill value & type for single state, if Starts or Goals, fill spawn_parent
     virtual void fillTypeValue(mdp_state_t* _state, type_t _type, double _value);
     virtual void fillTypeValueVec(vector<mdp_state_t*>& _states, type_t _type, vector<double>& _values);
-    
+
     //if succ states are obstacles/walls, put a NEG penalty on such obst states
-    virtual double addSuccessorValue(mdp_state_t* s, 
-                                     action_t succ_a, 
+    virtual double addSuccessorValue(mdp_state_t* s,
+                                     action_t succ_a,
                                      double percent);
 
     //get MDP P(s'|s, a, d) by computing discrete transition s->probs
-    virtual void getTransitionModel(mdp_state_t* s, 
-                                    action_t act, 
+    virtual void getTransitionModel(mdp_state_t* s,
+                                    action_t act,
                                     const Vec2& v_disturb);
-    
+
     //get MDP P(s'|s, a, d) by computing discrete transition s->post_probs
-    virtual void getPostTransitionModel(mdp_state_t* s, 
-                                    action_t act, 
+    virtual void getPostTransitionModel(mdp_state_t* s,
+                                    action_t act,
                                     const Vec2& v_disturb);
 
     // fill in the local transition probability (size: NUM_ACTIONS = 9) based on the optimal action at every state.
@@ -78,8 +79,8 @@ namespace mdp_planner
     virtual void optimalActionTransitionDistributionLocalStates(vector<mdp_state_t*>& _states, vector<int> statestoupdate);
 
     //get MDP Q(s, a) value by expectation over transition probs
-    virtual double getQvalue(mdp_state_t* s, 
-                             action_t act); 
+    virtual double getQvalue(mdp_state_t* s,
+                             action_t act);
 
     virtual double getQvalueQL(mdp_state_t* s,
                              action_t act);
@@ -148,7 +149,7 @@ namespace mdp_planner
 
     //clean/reset states
     virtual void cleanStates(void);
-    
+
     double getObstPenalty() {
       return obst_penalty;
     }
@@ -159,4 +160,3 @@ namespace mdp_planner
 
 
 #endif
-

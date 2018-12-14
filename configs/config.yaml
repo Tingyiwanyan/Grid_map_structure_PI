@@ -66,7 +66,7 @@ disturbance:
 
 ## ----------------- Obstacle setting -------------------
 obstacles:
-  hasObs: false #true
+  hasObs: true
   bbx1a: 320
   bbx1b: 333
   bbx2a: 337  #186
@@ -129,11 +129,11 @@ mdp_methods:
   shared_policy: true     # for multi-vehicle, only one set of policy
   pass_down_policy: false      #adding whether passing down policy
   iteration_method: VI #MFPT-VI #policy #value #priori #prioriPI #policyLP #valueMFPTSub #valueMFPTD #prioriD #qlearning (350000 [279874]) #MFPTQL (300,100) #DYNA (10000[10529 {k=10}]) #MFPTDYNA (800,100)
-  num_iterations: 10000
+  num_iterations: 50
   num_trials: 35000000
   action_cost: 1.0
   goal_reward: 100.0
-  obst_penalty: 0 #-100.0
+  obst_penalty: -100.0
   epsilon: 1
   resolution_layer: 10
   learning_rate: 0.1
@@ -184,8 +184,8 @@ environment:
     bound_y: 27
     bound_z: 27
   grids:
-    num_rows: 100
-    num_cols: 100
+    num_rows: 30
+    num_cols: 30
     num_iterations: 1000
   isSubSpace: 0
   partitions:

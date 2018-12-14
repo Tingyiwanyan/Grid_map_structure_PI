@@ -169,6 +169,60 @@ mdp_methods/fast:
 	cd /home/tingyi/GMSPI/Grid_map_structure_PI/build && $(MAKE) -f src/mdp_methods/CMakeFiles/mdp_methods.dir/build.make src/mdp_methods/CMakeFiles/mdp_methods.dir/build
 .PHONY : mdp_methods/fast
 
+PI.o: PI.cc.o
+
+.PHONY : PI.o
+
+# target to build an object file
+PI.cc.o:
+	cd /home/tingyi/GMSPI/Grid_map_structure_PI/build && $(MAKE) -f src/mdp_methods/CMakeFiles/mdp_methods.dir/build.make src/mdp_methods/CMakeFiles/mdp_methods.dir/PI.cc.o
+.PHONY : PI.cc.o
+
+PI.i: PI.cc.i
+
+.PHONY : PI.i
+
+# target to preprocess a source file
+PI.cc.i:
+	cd /home/tingyi/GMSPI/Grid_map_structure_PI/build && $(MAKE) -f src/mdp_methods/CMakeFiles/mdp_methods.dir/build.make src/mdp_methods/CMakeFiles/mdp_methods.dir/PI.cc.i
+.PHONY : PI.cc.i
+
+PI.s: PI.cc.s
+
+.PHONY : PI.s
+
+# target to generate assembly for a file
+PI.cc.s:
+	cd /home/tingyi/GMSPI/Grid_map_structure_PI/build && $(MAKE) -f src/mdp_methods/CMakeFiles/mdp_methods.dir/build.make src/mdp_methods/CMakeFiles/mdp_methods.dir/PI.cc.s
+.PHONY : PI.cc.s
+
+RTDP.o: RTDP.cc.o
+
+.PHONY : RTDP.o
+
+# target to build an object file
+RTDP.cc.o:
+	cd /home/tingyi/GMSPI/Grid_map_structure_PI/build && $(MAKE) -f src/mdp_methods/CMakeFiles/mdp_methods.dir/build.make src/mdp_methods/CMakeFiles/mdp_methods.dir/RTDP.cc.o
+.PHONY : RTDP.cc.o
+
+RTDP.i: RTDP.cc.i
+
+.PHONY : RTDP.i
+
+# target to preprocess a source file
+RTDP.cc.i:
+	cd /home/tingyi/GMSPI/Grid_map_structure_PI/build && $(MAKE) -f src/mdp_methods/CMakeFiles/mdp_methods.dir/build.make src/mdp_methods/CMakeFiles/mdp_methods.dir/RTDP.cc.i
+.PHONY : RTDP.cc.i
+
+RTDP.s: RTDP.cc.s
+
+.PHONY : RTDP.s
+
+# target to generate assembly for a file
+RTDP.cc.s:
+	cd /home/tingyi/GMSPI/Grid_map_structure_PI/build && $(MAKE) -f src/mdp_methods/CMakeFiles/mdp_methods.dir/build.make src/mdp_methods/CMakeFiles/mdp_methods.dir/RTDP.cc.s
+.PHONY : RTDP.cc.s
+
 SSA.o: SSA.cc.o
 
 .PHONY : SSA.o
@@ -263,6 +317,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... install/strip"
 	@echo "... install/local"
+	@echo "... PI.o"
+	@echo "... PI.i"
+	@echo "... PI.s"
+	@echo "... RTDP.o"
+	@echo "... RTDP.i"
+	@echo "... RTDP.s"
 	@echo "... SSA.o"
 	@echo "... SSA.i"
 	@echo "... SSA.s"

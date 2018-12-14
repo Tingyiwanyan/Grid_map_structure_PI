@@ -2,6 +2,7 @@
 #include <opencv2/imgproc.hpp>
 #include <map>
 #include <chrono>
+#include <fstream>
 
 #include "method_manager/method_manager.h"
 #include "info_methods/dp_solver.h"
@@ -369,7 +370,7 @@ MethodManager::mdpCore(void) {
         &pNet->getState(tf2_starts[i].translation)->type = START;
       }
       for (uint i = 0; i < tf2_goals.size(); i++) {
-        double goal_value = pParams->getParamNode()["mdp_methods"]["goal_reward"].as<double>();
+        double goal_value = MethodManager::PtrpParams->getParamNode()["mdp_methods"]["goal_reward"].as<double>();
         &pNet->getState(tf2_goals[i].translation)->type = GOAL;
         if(i==1){
             highgoalindex = i;
@@ -615,6 +616,8 @@ void MethodManager::mdpCore(void){
   pGrid2d = MDP_Grid2D::Ptr(new MDP_Grid2D(num_cols, num_rows, resolution, origin));
   pNet = MDP_Net::Ptr(new MDP_Net(pGrid2d));
   pDisturb = Disturbance::Ptr(new Disturbance(pParams, pGrid2d));
+  //Here is the resolution function I created**
+  /*
   for(int scale = 0; scale < num_cols_buff-1; scale++)
   {
     cout<<"Im in"<<scale<<"initialization"<<endl;
@@ -652,7 +655,7 @@ void MethodManager::mdpCore(void){
       pNet_buff->getState(tf2_starts[i].translation)->type = START;
     }
     for (uint i = 0; i < tf2_goals.size(); i++) {
-      double goal_value = pParams->getParamNode()["mdp_methods"]["goal_reward"].as<double>();
+      double goapNet->getState(tf2_starts[i].translation)l_value = pParams->getParamNode()["mdp_methods"]["goal_reward"].as<double>();
       pNet_buff->getState(tf2_goals[i].translation)->type = GOAL;
       if(i==1){
           highgoalindex = i;
@@ -666,26 +669,9 @@ void MethodManager::mdpCore(void){
     pGrid2d_vector.push_back(pGrid2d_buff);
     pNet_vector.push_back(pNet_buff);
     pDisturb_vector.push_back(pDisturb_buff);
-/*
-    pMDP = MDP::Ptr(new MDP(pParams, pNet, pDisturb));
-
-    // set the state type
-    for (uint i = 0; i < tf2_starts.size(); i++) {
-      pNet->getState(tf2_starts[i].translation)->type = START;
-    }
-    for (uint i = 0; i < tf2_goals.size(); i++) {
-      double goal_value = pParams->getParamNode()["mdp_methods"]["goal_reward"].as<double>();
-      pNet->getState(tf2_goals[i].translation)->type = GOAL;
-      if(i==1){
-          highgoalindex = i;
-          pMDP->fillTypeValue(pNet->getState(tf2_goals[i].translation), GOAL, goal_value + 50);
-      }
-      else{
-          pMDP->fillTypeValue(pNet->getState(tf2_goals[i].translation), GOAL, goal_value);
-      }
-      */
     }
   }
+  */
 
   pMDP = MDP::Ptr(new MDP(pParams, pNet, pDisturb));
 
@@ -698,15 +684,17 @@ void MethodManager::mdpCore(void){
     pNet->getState(tf2_goals[i].translation)->type = GOAL;
     if(i==1){
         highgoalindex = i;
-        pMDP->fillTypeValue(pNet->getState(tf2_goals[i].translation), GOAL, goal_value + 50);
+        //pMDP->fillTypeValue(pNet->getState(tf2_goals[i].translation), GOAL, goal_value + 50);
     }
-    else{
-        pMDP->fillTypeValue(pNet->getState(tf2_goals[i].translation), GOAL, goal_value);
-    }
+    //else{
+      //  pMDP->fillTypeValue(pNet->getState(tf2_goals[i].translation), GOAL, goal_value);
+    //}
 }
   goal = pNet->getState(tf2_goals[0].translation);
-  std::cout<<"Im here at GMSPI"<<std::endl;
-  mdp_planner::GMSPI(goal, pNet);
+  //std::cout<<"Im here at GMSPI"<<std::endl;
+  //Policy_iteration(pNet->mdp_states,pNet);
+  //mdp_planner::GMSPI(goal, pNet);
+  //mdp_planner::Trail_Based_RTDP(pNet,pParams);
 
     // Including obstacles
     bool hasObs = pParams->getParamNode()["obstacles"]["hasObs"].as<bool>();
@@ -766,18 +754,18 @@ void MethodManager::mdpCore(void){
         pNet->setObstacleStateValues(index15, index16, pMDP->getObstPenalty());
         pNet->setObstacleStateValues(index17, index18, pMDP->getObstPenalty());
         pNet->setObstacleStateValues(index19, index20, pMDP->getObstPenalty());
-        pNet->setObstacleStateValues(index21, index22, pMDP->getObstPenalty());
-        pNet->setObstacleStateValues(index23, index24, pMDP->getObstPenalty());
-        pNet->setObstacleStateValues(index25, index26, pMDP->getObstPenalty());
-        pNet->setObstacleStateValues(index27, index28, pMDP->getObstPenalty());
-        pNet->setObstacleStateValues(index29, index30, pMDP->getObstPenalty());
-        pNet->setObstacleStateValues(index31, index32, pMDP->getObstPenalty());*/
+        pNet->setObstacleStateValues(index21, index22, pMDP->getObstPenalty());*/
+        //pNet->setObstacleStateValues(index23, index24, pMDP->getObstPenalty());
+        //pNet->setObstacleStateValues(index25, index26, pMDP->getObstPenalty());
+        pNet->setObstacleStateValues(index27, index28, 0);//pMDP->getObstPenalty());
+        pNet->setObstacleStateValues(index29, index30, 0);//pMDP->getObstPenalty());
+        pNet->setObstacleStateValues(index31, index32, 0);//pMDP->getObstPenalty());
 
-        pNet->setObstacleStateValues(index33, index34, pMDP->getObstPenalty());
-        pNet->setObstacleStateValues(index35, index36, pMDP->getObstPenalty());
-        pNet->setObstacleStateValues(index37, index38, pMDP->getObstPenalty());
-        pNet->setObstacleStateValues(index39, index40, pMDP->getObstPenalty());
-        //pNet->setObstacleStateValues(index41, index42, pMDP->getObstPenalty());
+        pNet->setObstacleStateValues(index33, index34, 0);//pMDP->getObstPenalty());
+        pNet->setObstacleStateValues(index35, index36, 0);//pMDP->getObstPenalty());
+        pNet->setObstacleStateValues(index37, index38, 0);//pMDP->getObstPenalty());
+        pNet->setObstacleStateValues(index39, index40, 0);//pMDP->getObstPenalty());
+        pNet->setObstacleStateValues(index41, index42, 0);//pMDP->getObstPenalty());
 
 
         /*
@@ -944,8 +932,13 @@ void MethodManager::mdpCore(void){
         pNet->mdp_states[i]->optimal_action = pNet_vector[num_cols_buff-2]->mdp_states[index]->optimal_action;
       }
     }
-  //  pMDP->iterations();
-  //  pMDP->optimalActionTransitionDistribution(pNet->mdp_states);
+    //mdp_planner::Trail_Based_RTDP(pNet,pParams);
+    mdp_planner::MFPT_RTDP(pNet,pParams,pDisturb);
+    //mdp_planner::Policy_iteration(pNet->mdp_states,pNet);
+    //mdp_planner::GMSPI(goal, pNet);
+    //pMDP->iterations();
+    //states_fpt_final = pMDP->states_fpt_final;
+    pMDP->optimalActionTransitionDistribution(pNet->mdp_states);
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>( t2 - t1 ).count();
     cout << "\nTime Taken: " << duration/1000000.0 << " seconds" << endl;
@@ -1018,17 +1011,20 @@ void MethodManager::mdpCore(void){
 
 
     }
-
+  ofstream my_file2;
 
   // print map indices
+  my_file2.open("state_value.txt");
   std::cout << "\nmap indices" << std::endl;
   for (int i = pGrid2d -> n_rows - 1; i >= 0; i--) {
       for (int j = 0; j < pGrid2d -> n_cols; j++) {
-          std::cout << i * pGrid2d -> n_cols + j << " ";
+          //std::cout << i * pGrid2d -> n_cols + j << " ";
+          std::cout<< (int)pNet->mdp_states[i*pGrid2d->n_cols+j]->optimal_value<<" ";
+          my_file2<<pNet->mdp_states[i*pGrid2d->n_cols+j]->optimal_value<<",";
       }
       std::cout << std::endl;
   }
-
+  my_file2.close();
 
   vector<viz_tool::RGB> colors = viz_tool::generateRGB(tf2_starts.size(), 'r');
 

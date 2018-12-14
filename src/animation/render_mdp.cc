@@ -520,6 +520,7 @@ drawMDP_Policies(const MDP_Net::Ptr& _pNet, const RGB &custom_color){
 
   void
   drawMDP_All(void) {
+    //std::cout<<"Im here at drawall"<<std::endl;
 
     //to set color, need to turn on below, and turn off texture if it is on
     glEnable(GL_COLOR_MATERIAL);
@@ -535,6 +536,30 @@ drawMDP_Policies(const MDP_Net::Ptr& _pNet, const RGB &custom_color){
 
     if (pMgr->getpParams()->getParamNode()["mdp_methods"]["shared_policy"].as<bool>()) {
       drawMDP_States(pMgr->getpNet());
+      vector<point2d_t> _grids = pMgr->getpNet()->cell_centers;
+      /*
+      for (int i = 0; i < pMgr->getpNet()->mdp_states.size(); i++) {
+
+        mdp_state_t* s = pMgr->getpNet()->mdp_states[i];
+        //don't draw spawned starts and goals
+        if (s->spawn_parent != NULL || s->type == OBSTACLE) {
+          //cout<<"not drawing starts, goals, obstacles"<<endl;
+          continue;
+        }
+
+        //draw variance colormap
+        double max_val = 500;
+        double offset = -0.5;
+        glPushMatrix();
+        glTranslatef(0, 0, offset);
+        glBegin(GL_QUADS);
+        viz_tool::colormap(pMgr->getpNet()->states_fpt_final[s->id] / max_val);
+        glVertex3f(_grids[s->id].x(), _grids[s->id].y(), 0);
+        glEnd();
+        glPopMatrix();
+      }
+      */
+
       if (pMgr->getpParams()->getParamNode()["visualization"]["show_policy"].as<bool>())
         drawMDP_Policies(pMgr->getpNet(), pMgr->getpNet()->getPolicyColor());
     } else {

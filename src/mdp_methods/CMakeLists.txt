@@ -7,6 +7,8 @@ set(${PROJ_NAME}_SRCS
   mdp_core.cc
   SSA.cc
   ssp.cc
+  PI.cc
+  RTDP.cc
 )
 
 include_directories(

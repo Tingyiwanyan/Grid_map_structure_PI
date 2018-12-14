@@ -57,6 +57,7 @@ namespace mdp_planner{
     vector<MDP_State*> predecessors;	// default null, can be itself
     vector<double> probs;		// transition probabilities, default 0
     vector<double> post_probs;
+    vector<double> policy;
     vector<int> action_count;
 
     // value iterations
@@ -65,6 +66,7 @@ namespace mdp_planner{
     action_t optimal_action;		// the best action
     double last_optimal_value;		// standard VI are computed from values of last stage, a snapshot
     action_t last_optimal_action;
+    double reachability;
 
     MDP_State* spawn_parent; 	// spawn a copy of state by adding special properties, eg, goal/start
     map<MDP_State*, pair<double, action_t> > m_values;	//pair<value, optimal_action>, used in ssp
@@ -80,6 +82,7 @@ namespace mdp_planner{
       successors.resize(NUM_ACTIONS, this);
       predecessors.clear();
       probs.resize(NUM_ACTIONS, 0);
+      policy.resize(NUM_ACTIONS,0);
       post_probs.resize(NUM_ACTIONS, 0);
       optimal_value = 0;
       last_optimal_value = 0;

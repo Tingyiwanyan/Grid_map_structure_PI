@@ -1,5 +1,5 @@
-/* 
-Stochastic Shortest Path (SSP)  
+/*
+Stochastic Shortest Path (SSP)
  */
 
 #ifndef STOCH_SHORTEST_PATH_H
@@ -9,6 +9,7 @@ Stochastic Shortest Path (SSP)
 #include <queue>
 #include <map>
 #include <Eigen/Sparse>
+#include <algorithm>
 
 using namespace std;
 using namespace geometry_utils;
@@ -35,24 +36,24 @@ namespace mdp_planner {
 
     // track the state and concatinate them to get a sequence of states
     // such "future path" is in the expected sense, can be "misleading" though
-    static vector<mdp_state_t*> 
+    static vector<mdp_state_t*>
     getExpectedWayStates(mdp_state_t* _start, MDP_Net::Ptr&);
-    vector<mdp_state_t*> 
+    vector<mdp_state_t*>
     getExpectedWayStates(mdp_state_t* _start);
 
-    static vector<mdp_state_t*> 
+    static vector<mdp_state_t*>
     getExpectedWayStates(mdp_state_t* _start, mdp_state_t* _goal, MDP_Net::Ptr&);
-    vector<mdp_state_t*> 
+    vector<mdp_state_t*>
     getExpectedWayStates(mdp_state_t* _start, mdp_state_t* _goal);
 
     //convert waystates to waypoints (poses)
-    static vector<Transform2> 
+    static vector<Transform2>
     getWaypoints(const vector<mdp_state_t*>& _waystates, MDP_Net::Ptr&);
-    vector<Transform2> 
+    vector<Transform2>
     getWaypoints(const vector<mdp_state_t*>& _waystates);
 
     //smooth a path by removing sharp turn waypoints, rule:
-    // (1) each such node of angle within _angle_threshold, 
+    // (1) each such node of angle within _angle_threshold,
     // (2) and the _n/2 nodes before it, and the _n-_n/2 nodes after it
     vector<Transform2>
     pathSharpTurnsRemoval(const vector<Transform2>& _in_paths,
@@ -69,7 +70,7 @@ namespace mdp_planner {
     convertSplinePaths2Waypoints(const vector<arma::vec>& _paths);
 
     /* other util functions */
-    //convert arma vec to STL vector or deque 
+    //convert arma vec to STL vector or deque
 
     template <typename T>
     void convertArmaVecTo(const arma::vec& _v, T& _t) {
@@ -86,7 +87,7 @@ namespace mdp_planner {
     vector<double>
     getKnotTimes(const vector<Transform2>& _waypoints, double _speed);
 
-    void fillTransMatrix(SpMat& matrix, const int &state_id, const int &cols, const vector<double>& probs);
+    void fillTransMatrix(SpMat& matrix, const int &state_id, const int &cols, const vector<double>& probs,int oo);
 
     // fill in the global transition probability (size: grids * grids)
     void initTransMatrix();
@@ -94,6 +95,8 @@ namespace mdp_planner {
     void printTransMatrix(const int &state_i, const int &state_j);
 
     double meanFirstPassageTime(const mdp_state_t* start_state, const int &end_state);
+    void MFPT(MDP_Net::Ptr& pNet, int id);
+    void MFPT_obstacle(MDP_Net::Ptr& pNet);
 
 
     double mcFirstPassageTime(const int &start_state, const int &end_state);
@@ -110,8 +113,8 @@ namespace mdp_planner {
       return q_goals;
     }
 
-  private:
-    // n-step transition probability matrix p_ij(k) 
+  //private:
+    // n-step transition probability matrix p_ij(k)
     vector<Eigen::SparseMatrix<double> > transMatrixs;
     // transition probability matrix p_ij(k) at each step
     Eigen::SparseMatrix<double> transMatrix;
@@ -120,7 +123,8 @@ namespace mdp_planner {
     // state distribution all steps, express in vector
     vector<vector<double> > bels;
     vector<double> f_ij;
-    
+    double *reachability;
+
     std::queue<Transform2> q_goals;
   };
 
@@ -128,4 +132,3 @@ namespace mdp_planner {
 
 
 #endif
-

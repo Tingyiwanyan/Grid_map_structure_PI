@@ -297,6 +297,10 @@ mdp_core.h
 ../include/mdp_methods/mdp_core.h
 mdp_state.h
 ../include/mdp_methods/mdp_state.h
+mdp_methods/ssp.h
+../include/mdp_methods/mdp_methods/ssp.h
+fstream
+-
 
 ../include/mdp_methods/ssp.h
 mdp_core.h
@@ -306,6 +310,8 @@ queue
 map
 -
 Eigen/Sparse
+-
+algorithm
 -
 
 ../include/method_manager/method_manager.h

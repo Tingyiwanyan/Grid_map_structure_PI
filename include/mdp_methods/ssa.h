@@ -24,6 +24,8 @@
 #include "mdp_net.h"
 #include "mdp_core.h"
 #include "mdp_state.h"
+#include "mdp_methods/ssp.h"
+#include <fstream>
 
 using namespace geometry_utils;
 
@@ -109,10 +111,22 @@ namespace mdp_planner
     bool find_index(std::vector<int> index, int k);
     bool check_predecessor(Policy_Node* queue,Policy_Node* node);
     bool check_policy_converge(std::vector<Policy_Node*> new_queue);
-    void Policy_iteration(vector<mdp_states*> &states);
-    float compute_Q_value_PI(mdp_state_t* s,action_t act);
-    bool check_policy_converge_PI(vector<mdp_state*>& states);
-
+    void Policy_iteration(std::vector<mdp_state_t*> &states,const MDP_Net::Ptr& pNet);
+    float compute_Q_value_PI(mdp_state_t* s,action_t act,const MDP_Net::Ptr& pNet);
+    bool check_policy_converge_PI(std::vector<mdp_state_t*>& states);
+    void getTransitionModel(mdp_state_t* s, action_t act, MDP_Net::Ptr& pNet);
+    double addSuccessorValue(mdp_state_t* s, action_t succ_a,  MDP_Net::Ptr& pNet);
+    void updateState(mdp_state_t* s, utils::Parameters::Ptr& pParams, MDP_Net::Ptr& pNet);
+    double Trail_update_(mdp_state_t* s, utils::Parameters::Ptr& pParams, MDP_Net::Ptr& pNet);
+    void Trail_Based_RTDP( MDP_Net::Ptr& pNet, utils::Parameters::Ptr& pParams);
+    mdp_state_t* one_time_step_sample(mdp_state_t* s, action_t act, utils::Parameters::Ptr& pParams, MDP_Net::Ptr& pNet);
+    void MFPT_RTDP(MDP_Net::Ptr& pNet,utils::Parameters::Ptr& pParams,Disturbance::Ptr& pDisturb);
+    void uniform_transition_initialization(MDP_Net::Ptr& pNet);
+    void Policy_evaluation(MDP_Net::Ptr& pNet);
+    void Policy_update(MDP_Net::Ptr& pNet);
+    void Policy_iteration(MDP_Net::Ptr& pNet);
+    void Convert_to_Markov_chain(MDP_Net::Ptr& pNet);
+    void Compute_MFPT(MDP_Net::Ptr& pNet, Disturbance::Ptr& pDisturb,utils::Parameters::Ptr& pParams);
 }
 
 #endif
